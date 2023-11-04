@@ -1,0 +1,316 @@
+ 
+/* All-app */    
+    * {font-family: 
+        Bahnschrift; !important;}
+        
+    * {box-shadow: 
+        none !important; 
+        -webkit-box-shadow: none !important;
+        text-shadow: transparent !important;}
+      
+      body {
+        margin: 20px;
+      }
+      
+    .selected{
+        background-color: white !important ;
+        color: white !important; 
+        font-weight: bold !important; 
+        font-style: italic !important ;
+      }
+    .legend-text {
+        font-family: Bahnschrift;
+        font-size: 8px;
+        font-weight: normal; 
+      }
+    #co2_title, #pm25_title, #voc_title, 
+    #temp_title, #rh_title, #gloss_title {
+        font-family: Bahnschrift;
+        font-stretch: expanded; 
+        font-size: 20px;
+        text-transform: uppercase;
+        margin-top: 0px;
+        margin-bottom: 15px;
+        font-weight: 900;
+        background: linear-gradient(to right, #C268DD, #DD7E68)!important;
+        -webkit-background-clip: text !important;
+        -webkit-text-fill-color: transparent !important;
+        width: 25%;
+    }
+/* Carousel */
+      #hh_well{
+        display: flex;
+        justify-content: center;
+        align-items: center
+        background-color: transparent !important;
+        border: none;
+        
+      }
+      .well {
+        background-color: transparent;
+        border: none;
+      }
+      .carousel-indicators li, .carousel-indicators li.active {
+        height: 10px;
+        width: 10px;
+      }
+      .carousel-indicators {
+        bottom: 0px;
+        margin-bottom: 5px;
+      }
+      .carousel-control.right, .carousel-control.left,
+      .carousel-control.right:focus, .carousel-control.left:focus{
+        background-image: none;
+        border: transparent;
+        text-shadow: transparent;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 3%;
+      }
+      .carousel-control {
+        text-shadow: transparent;
+      }
+      a.carousel-control:focus {
+        outline: transparent;
+      }
+      .carousel-caption, carousel-caption:focus, carousel-caption:hover{
+        background-color: transparent;
+      }
+      .carousel-inner>.active, .carousel-inner>.next, .carousel-inner>.prev{
+        background-color: transparent;
+      }
+      .carousel, .carousel-inner, #mycarousel.carousel.slide {
+        width: 100%;
+      }
+      .col-sm-6 {
+        width: 95%;
+      }
+/* Home */
+      #hb_row {
+        justify-content: left!important;
+        padding-left: 30px;
+        padding-right; 30px; 
+      }
+/* Plotly */
+      #plot-well {
+        height: 625px;
+        background-color: transparent;
+        border-color: transparent; 
+        box-shadow: none;
+      }
+      .js-plotly-plot .plotly, .js-plotly-plot .plotly {
+        height: fit-content;
+      }
+      #modebar-f495ae .modebar-group {
+        border-radius: 20%;
+        background-color: transparent;
+      }
+ /* Waiter */     
+    .waiter-overlay-content .orbit{
+      border-color: #BEB7FF !important;
+      } 
+    .waiter-overlay-content .sun{
+      background-color: #F4A5FF !important;
+      }
+    .waiter-overlay-content .mercury{
+      background-color: #FFA5F2  !important;
+      }
+    .waiter-overlay-content .venus{
+      background-color: #FF95CE !important;
+      }
+    .waiter-overlay-content .earth{
+      background-color: #FFB6B6 !important;
+      }
+
+/* Range slider */
+    * .irs-single, * .irs-bar-edge {
+      border-color: transparent;
+      background-color: transparent;
+      }
+                  
+    * .irs-bar{
+      background: #D0ACF0 !important;
+      border-color: transparent !important ;
+      }
+    
+    * .irs-line {
+      background: #F0ACE6 !important; 
+      border-color: transparent !important;
+      }
+    .js-irs-0 .irs-grid-text {
+      font-size: 1pt; 
+      color: transparent;
+      }
+    .irs-from, .irs-to, .irs-single { 
+      background: #D0ACF0 !important ;
+      }
+    .irs-grid-pol.small{
+      height: 0px !important; 
+      }
+    .js-irs-0 .js-grid-text-0:before {
+      content: "Sunday" !important; 
+      font-size: 8pt;
+      color: black !important
+      }
+    .js-irs-0 .js-grid-text-1:before {
+      content: "Monday" !important; 
+      font-size: 8pt;
+      color: black !important
+      }
+    .js-irs-0 .js-grid-text-2:before {
+       content: "Tuesday" !important; 
+       font-size: 8pt;
+       color: black !important
+      }
+    .js-irs-0 .js-grid-text-3:before {
+        content: "Wednesday" !important; 
+        font-size: 8pt;
+        color: black !important
+      }
+    .js-irs-0 .js-grid-text-4:before {
+        content: "Thursday" !important; 
+        font-size: 8pt;
+        color: black !important
+      }
+    .js-irs-0 .js-grid-text-5:before {
+        content: "Friday" !important; 
+        font-size: 8pt;
+        color: black !important
+      }
+    .js-irs-0 .js-grid-text-6:before {
+        content: "Saturday" !important; 
+        font-size: 8pt;
+        color: black !important
+      }
+      
+/* Buttons */                 
+      #go:hover, #co2:hover, #co2:focus, #go:focus {
+        -moz-box-shadow: none;
+        -webkit-box-shadow: none;
+        box-shadow: none;
+        border: none;
+      }
+      #home, #glossary {
+        border: none;
+        border-radius: 50%;
+        background-color: transparent;
+        color: #BEB7FF;
+        font-size: 35px;
+        display:flex;
+        height: 60px;
+        width: 60px;
+        margin: 5px;
+        align-self: center;
+        justify-content: center;
+        align-items: center;
+      }
+      #home.bttn-unite.bttn-default:before,
+      #glossary.bttn-unite.bttn-default:before{
+        background: #E2DFFF;
+      }
+      #home.bttn-unite.bttn-default:after,
+      #glossary.bttn-unite.bttn-default:after{
+        background: #F0EFFF;
+      }
+      #co2, #pm25, #voc, #temp, #rh {
+        display:flex;
+        height: 80px;
+        width: 80px;
+        border-radius: 50%;
+        border: none;
+        background-color: #F5B3D7;
+        color: white;
+        font-size: 23px;
+        margin: 8px;
+        align-self: center;
+        justify-content: center;
+        align-items: center;
+      }
+      #co2.bttn-unite.bttn-default:before {
+        background: #FFD2EB;
+      }
+      #co2.bttn-unite.bttn-default:after {
+        background: #FFEAF5;
+      }
+      #pm25 {
+        background-color: #DF82E2 !important;
+      }
+      #pm25.bttn-unite.bttn-default:before {
+        background: #EAA1ED;
+      }
+      #pm25.bttn-unite.bttn-default:after {
+        background: #F1CEF3;
+      }
+      #voc {
+        background-color: #C4A1EF !important;
+      }
+      #voc.bttn-unite.bttn-default:before {
+        background: #D2B7F4;
+      }
+      #voc.bttn-unite.bttn-default:after {
+        background: #E4D0FD;
+      }
+      #temp {
+        background-color: #91ACF1 !important;
+      }
+      #temp.bttn-unite.bttn-default:before {
+        background: #B0C4F5;
+      }
+      #temp.bttn-unite.bttn-default:after {
+        background: #CFDDFF;
+      }
+      #rh {
+        background-color: #95CAEA !important;
+      }
+      #rh.bttn-unite.bttn-default:before {
+        background: #BBE1F7;
+      }
+      #rh.bttn-unite.bttn-default:after {
+        background: #D8F1FF;
+      }
+      #go {
+        background-color: #BEB7FF;
+        color: black;
+        font-size: 15px;
+        font-weight: normal;
+      }
+ 
+/*Page layout elements*/    
+      #sidebar {
+        background-color: transparent !important;
+        border-color: transparent;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        -moz-box-shadow: none;
+        -webkit-box-shadow: none;
+        box-shadow: none;
+        width = 70px;
+        justify-content: center;
+        align-items: center;
+        }
+      #tabs {display: none;}
+                  
+      #top-well, #bottom-well {
+        background-color: #F3F5FB;
+        border-color: transparent; 
+        box-shadow: none;
+        border-radius: 30px;
+        }
+      #bottom-well {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding-right: 60px;
+        padding-left: 0px;
+        width: 98% !important;
+      }
+      .row {
+        display: flex;
+        justify-content: center;
+      }
+      #gloss_row1 {
+        display: flex;
+        justify-content: left;
+      }
