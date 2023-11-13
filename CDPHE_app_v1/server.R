@@ -27,7 +27,7 @@ function(input, output, session) {
                                          text2 = map(paste(
                                            selected()$site_id, " ", selected()$room), HTML),
                                          text = map(paste(  
-                                           "<b> Site ID:", selected()$site_id,"<br>", 
+                                           "<b> Site ID:", paste(selected()$site_id, selected()$id_room),"<br>", 
                                            "<b>CO2 Concentration (ppm):</b>", round(selected()$co2, digits = 0),"<br>",
                                            "<b>Hour of Week:</b>", selected()$how,"<br>",
                                            "<b>Day of Week:</b>", selected()$day_of_week,"<br>",
@@ -98,7 +98,7 @@ function(input, output, session) {
                                          text2 = map(paste(
                                            selected()$site_id, " ", selected()$room), HTML),
                                          text = map(paste(  
-                                           "<b> Site ID:", selected()$site_id,"<br>", 
+                                           "<b> Site ID:", paste(selected()$site_id, selected()$id_room),"<br>", 
                                            "<b>PM2.5 Concentration (μg/m3):</b>", round(selected()$pm25, digits = 0),"<br>",
                                            "<b>Hour of Week:</b>", selected()$how,"<br>",
                                            "<b>Day of Week:</b>", selected()$day_of_week,"<br>",
@@ -168,7 +168,7 @@ function(input, output, session) {
                                          text2 = map(paste(
                                            selected()$site_id, " ", selected()$room), HTML),
                                          text = map(paste(  
-                                           "<b> Site ID:", selected()$site_id,"<br>", 
+                                           "<b> Site ID:", paste(selected()$site_id, selected()$id_room),"<br>", 
                                            "<b>TVOC Concentration (ppb):</b>", round(selected()$voc, digits = 0),"<br>",
                                            "<b>Hour of Week:</b>", selected()$how,"<br>",
                                            "<b>Day of Week:</b>", selected()$day_of_week,"<br>",
@@ -238,7 +238,7 @@ function(input, output, session) {
                                          text2 = map(paste(
                                            selected()$site_id, " ", selected()$room), HTML),
                                          text = map(paste(  
-                                           "<b> Site ID:", selected()$site_id,"<br>", 
+                                           "<b> Site ID:", paste(selected()$site_id, selected()$id_room),"<br>", 
                                            "<b>Temperature (°C):</b>", round(selected()$temp, digits = 0),"<br>",
                                            "<b>Hour of Week:</b>", selected()$how,"<br>",
                                            "<b>Day of Week:</b>", selected()$day_of_week,"<br>",
@@ -308,7 +308,7 @@ function(input, output, session) {
                                          text2 = map(paste(
                                            selected()$site_id, " ", selected()$room), HTML),
                                          text = map(paste(  
-                                           "<b> Site ID:", selected()$site_id,"<br>", 
+                                           "<b> Site ID:", paste(selected()$site_id, selected()$id_room),"<br>", 
                                            "<b>Relative Humidity (%):</b>", round(selected()$RH, digits = 0),"<br>",
                                            "<b>Hour of Week:</b>", selected()$how,"<br>",
                                            "<b>Day of Week:</b>", selected()$day_of_week,"<br>",
@@ -472,12 +472,12 @@ function(input, output, session) {
       
     } else if (input$plot_type == "trend") {
       dataset2 <-
-        readRDS("C:/Users/PC/Documents/Housing Studies Summer 2022/Summer 2023/CDPHE Data/cdphe_ssa_trend.rds") %>%
+        readRDS(paste0(rstudioapi::getActiveProject(),"/data/cdphe_ssa_trend.rds")) %>%
         filter(.data[[input$var]] %in% input$second_in)
       
     } else if (input$plot_type == "pattern") {
       dataset2 <-
-        readRDS("C:/Users/PC/Documents/Housing Studies Summer 2022/Summer 2023/CDPHE Data/cdphe_ssa_pattern.rds") %>%
+        readRDS(paste0(rstudioapi::getActiveProject(),"/data/cdphe_ssa_pattern.rds")) %>%
         filter(.data[[input$var]] %in% input$second_in)
       
     } else {
