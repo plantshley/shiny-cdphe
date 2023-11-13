@@ -11,16 +11,19 @@ tabPanel(value = "home_tab", id = "home_tab", title = 'Home',
       tags$img(src = "shiny-slide.png")),
     
     carouselItem(
-      tags$img(src = "pm2.5.png")),
+      tags$img(src = "pm2.5_.png")),
     
     carouselItem(
-      tags$img(src = "tvoc.png")),
+      tags$img(src = "tvoc2.png")),
     
     carouselItem(
       tags$img(src = "temp2.png")),
     
     carouselItem(
-      tags$img(src = "rh.png"))
+      tags$img(src = "rh_.png")),
+    
+    carouselItem(
+      tags$img(src = "refs.png"))
     ))),
   
   br(),
