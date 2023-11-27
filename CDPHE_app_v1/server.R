@@ -11,7 +11,80 @@ function(input, output, session) {
     })
     updateTabsetPanel(session, "tabs", selected = "home_tab")
   })
-  
+###### MV TAB######
+  observeEvent(input$mv, {
+    output$title <- renderUI({
+      h1(id = "mv_title", "Multivariable Data")
+    })
+    output$plot_title <- renderUI({
+      h4(id = "plot_title", plot_title())
+    })
+    updateTabsetPanel(session, "tabs", selected = "mv_tab")
+    
+    output$plot_mv <- renderPlotly({ res = 96
+    req(input$go_mv, input$mv)
+    p6 <- ggplotly(height = 1000, 
+                  ggplot(data = selected_mv(), aes(x = val, y = ecdf, color = paste(site_id, id_room),
+                                                   text2 = map(paste(
+                                                     selected_mv()$site_id, " ", selected_mv()$room), HTML), 
+                                                   text = map(paste(  
+                                                     "<b> Site ID:", paste(selected_mv()$site_id, selected_mv()$id_room),"<br>",
+                                                     "<b>Value:</b>", round(selected_mv()$val, digits = 0),"<br>",
+                                                     "<b>Percentage:</b>", paste0(round(selected_mv()$ecdf*100, digits =1), "%"), "<br>",
+                                                     "<b>Site Type:</b>", selected_mv()$site_type,"<br>",
+                                                     "<b>Room Type:</b>", selected_mv()$room_type), HTML)), lwd = 0.25, ylim = c(0,1)) +
+                    geom_step(lwd = 0.25) +
+                    ylab(NULL) + 
+                    xlab("\nIndicator Value (ppm, μg/m3, ppb, °C, etc)\n") +
+                    scale_color_manual(guide = "legend", 
+                                       labels = "text2",
+                                       values = colorsch_mv()) + 
+                    guides(fill= guide_legend(
+                      override.aes = list(
+                        shape = NULL, 
+                        size = 1, 
+                        stroke = 1))) +
+                    facet_wrap(~pol, ncol = 1, scales = "free_x", #strip.position = "bottom",
+                               labeller = as_labeller(c(co2 = "CO2 (ppm)", 
+                                                        pm25 = "PM2.5 (μg/m3)",
+                                                        voc = "TVOC (ppb)",
+                                                        temp = "Tempurature (°C)",
+                                                        RH = "Relative Humidity (%)"))) +
+                    theme(
+                      axis.text.x = element_text(family = "Bahnschrift", angle = 0, hjust = 0, size = 10, 
+                                                 margin = margin(b = 1, unit = "mm")), 
+                      axis.text.y = element_text(family = "Bahnschrift", size = 10, hjust = 0),
+                      #axis.title.y = element_text(family = "Bahnschrift", size = 12, margin = margin(r = 5, l = 1)),
+                      axis.title.x = element_text(family = "Bahnschrift", size = 12, margin = margin(t = 5, b = 5, unit = "mm")),
+                      strip.text = element_text(face = "plain", angle = 0, size = 10, color = "black", family = "Bahnschrift",
+                                                margin = margin(t = 1.5, unit = "mm")),
+                      strip.background = element_rect(fill = "#EDDFF9", size = 1),
+                      #strip.placement = "outside", 
+                      panel.spacing.x = unit(0.5, "mm"),
+                      plot.margin = margin(t = 0, r = 0, b = 0, l = 0, unit = "pt"),
+                      panel.background = element_rect(fill = "white", color = '#F0E7F1', linewidth =1.5),
+                      panel.grid = element_blank(),
+                      panel.grid.major.y = element_line(color = "#F0E7F1", size = 0.25),
+                      panel.grid.minor.y = element_line(color = "#F0E7F1", size = 0.25),
+                      panel.grid.major.x = element_line(color = "#F0E7F1", size = 0.25),
+                      panel.grid.minor.x = element_line(color = "#F0E7F1", size = 0.25)),
+                  tooltip = "text"
+    )
+    p6 <- layout(
+      p6, 
+      legend = list(title = "", font = list(family = "Bahnschrift", size = 12),
+                    itemwidth = 1),
+      xaxis = list(showgrid = TRUE, minorgridwidth = 0.25, minorgridcolor = "#F0E7F1")
+    ) %>%
+      config(displayModeBar = "static", displaylogo = FALSE, 
+             modeBarButtonsToRemove = list("sendDataToCloud", "toImage", "autoScale2d", 
+                                           "resetScale2d", 
+                                           "select2d", "lasso2d", 
+                                           "zoomIn2d", "zoomOut2d", "toggleSpikelines"))
+    w_mv$hide()
+    p6
+    })
+    }) 
 ######CO2 TAB######
   observeEvent(input$co2, {
     output$title <- renderUI({
@@ -385,7 +458,84 @@ function(input, output, session) {
            "Colorblind-Friendly" = viridis::plasma(num_vals))
   })
   
-#Subvariables
+# mv colors  
+  colorsch_mv <- eventReactive(input$go_mv, {
+    num_vals <- length(unique(paste(selected_mv()$site_id, selected_mv()$id_room)))
+    switch(input$colors_mv,
+           "Default" = colorRampPalette(c("#4FD9D9", "#FF68BD"))(num_vals),
+           "Rainbow" = colorRampPalette(c("#F8766D", "#00C0B8","#529EFF","#FF689F"))(num_vals),
+           "Colorblind-Friendly" = viridis::plasma(num_vals))
+  })
+  
+#Subvariables (mv tab)
+  observeEvent(input$var_mv, {
+    if (input$var_mv == "site_type") {
+      updatePickerInput(session, "second_in_mv", "Choose site type(s):",
+                        choices = site_types,
+                        choicesOpt = list(content = c(
+                          pickerFormat01("#E7BEF9", "fa fa-child-reaching fa-bounce", "Childcare"),
+                          pickerFormat01("#E7BEF9", "fa fa-person-cane", "Elderly Care"),
+                          pickerFormat01("#E7BEF9", "fa fa-hand-holding-hand fa-sm", "Adult Care/Social Services"),
+                          pickerFormat01("#E7BEF9", "fa fa-person-shelter", "24-hr Shelters"),
+                          pickerFormat01("#E7BEF9", "fa fa-solid fa-tree-city fa-sm", "Office Buildings"),
+                          pickerFormat01("#E7BEF9", "fa fa-bowl-food", "Food Services"),
+                          pickerFormat01("#E7BEF9", "fa fa-mosque fa-sm", "Religious Facilities")))
+      )
+      
+    } else if (input$var_mv == "room_type") {
+      updatePickerInput(session,"second_in_mv", "Choose room type(s):",
+                        choices = room_types2,
+                        choicesOpt = list(content = c(
+                          pickerFormat01("#F2BEF2", "fa fa-kitchen-set", "Kitchen"),
+                          pickerFormat01("#F2BEF2", "fa fa-utensils", "Dining"),
+                          pickerFormat01("#F2BEF2", "fa fa-stapler fa-sm", "Office"),
+                          pickerFormat01("#F2BEF2", "fa fa-bell-concierge", "Reception"),
+                          pickerFormat01("#F2BEF2", "fa fa-chalkboard-user", "Classroom"),
+                          pickerFormat01("#F2BEF2", "fa fa-user-group", "Meeting"),
+                          pickerFormat01("#F2BEF2", "fa fa-people-group", "Gathering"),
+                          pickerFormat01("#F2BEF2", "fa fa-couch", "Break Room"),
+                          pickerFormat01("#F2BEF2", "fa fa-door-closed", "Corridor"),
+                          pickerFormat01("#F2BEF2", "fa fa-bed fa-sm", "Bedroom"),
+                          pickerFormat01("#F2BEF2", "fa fa-box-archive", "Storage"),
+                          pickerFormat01("#F2BEF2", "fa fa-stethoscope", "Exam Room"),
+                          pickerFormat01("#F2BEF2", "fa fa-flask", "Medical Lab"),
+                          pickerFormat01("#F2BEF2", "fa fa-ghost fa-bounce", "Other")))
+      ) 
+      
+    } else if (input$var_mv == "leakiness") {
+      updatePickerInput(session,"second_in_mv", "Building Leakiness",
+                        choices = leaky,
+                        choicesOpt = list(content = c(
+                          pickerFormat01("#FFCEDA", "fa fa-stroopwafel fa-xs", "Leaky"),
+                          pickerFormat01("#FFCEDA", "fa fa-stroopwafel fa-sm", "Moderate"),
+                          pickerFormat01("#FFCEDA", "fa fa-stroopwafel", "Tight")))
+      ) 
+      
+    } else if (input$var_mv == "season") {
+      updatePickerInput(session,"second_in_mv", "Choose season(s)",
+                        choices = seasons,
+                        choicesOpt = list(content = c(
+                          pickerFormat01("#FFC9EF", "fa fa-solid fa-snowflake", "Winter"),
+                          pickerFormat01("#FFC9EF", "fa fa-solid fa-leaf", "Spring"),
+                          pickerFormat01("#FFC9EF", "fa fa-solid fa-sun", "Summer"),
+                          pickerFormat01("#FFC9EF", "fa fa-crow", "Fall")))
+      )
+      
+    } else if (input$var_mv == "ah_groups") {
+      updatePickerInput(session,"second_in_mv", "Number of Airhandlers",
+                        choices = air_hands,
+                        choicesOpt = list(content = c(
+                          pickerFormat01("#FFCFC5", "fa fa-solid fa-fish", "Less than 10"),
+                          pickerFormat01("#FFCFC5", "fa fa-solid fa-frog fa-bounce", "10 to 25"),
+                          pickerFormat01("#FFCFC5", "fa fa-solid fa-dragon", "More than 25")))
+      ) 
+      
+    } else {
+      updateSelectInput(session, "second_in_mv", "Select an option", choices = NULL)
+    }
+  })  
+  
+#Subvariables (uni tab)
   observeEvent(input$var, {
     if (input$var == "site_type") {
       updatePickerInput(session, "second_in", "Choose site type(s):",
@@ -454,9 +604,53 @@ function(input, output, session) {
   })
   
 #Waiter
+  w_mv <- waiter::Waiter$new(color = transparent(), html = spin_solar())
   w <- waiter::Waiter$new(color = transparent(), html = spin_solar())
   
-#Selected data 
+# MV plot title  
+  plot_title <- eventReactive(input$go_mv, {
+    req(input$plot_type_mv)
+    
+    if (input$plot_type_mv == "cfd") {
+      paste("Cumulative", "Frequecy", "Distribution")
+      
+    } else if (input$plot_type_mv == "2") {
+      "Option 2"
+      
+    } else if (input$plot_type == "3") {
+      "Option 3"
+      
+    } else {
+      ""
+  }
+    })
+  
+#Selected data (mv tab)  
+  selected_mv <- eventReactive(input$go_mv, {
+    req(input$plot_type_mv, input$var_mv, input$second_in_mv, input$pol)
+    
+    w_mv$show()
+    
+    if (input$plot_type_mv == "cfd") {
+      dataset3 %>%
+        filter(pol %in% input$pol) %>%
+        filter(.data[[input$var_mv]] %in% input$second_in_mv)
+      
+    } else if (input$plot_type_mv == "2") {
+      dataset3 %>%
+        filter(.data[[input$var_mv]] %in% input$second_in_mv)
+      
+    } else if (input$plot_type == "3") {
+      dataset3 %>%
+        filter(.data[[input$var_mv]] %in% input$second_in_mv)
+      
+    } else {
+      dataset3 %>%
+        filter(.data[[input$var_mv]] %in% input$second_in_mv)
+    }
+  })
+  
+#Selected data (uni tab)
   selected <- eventReactive(input$go, {
     req(input$plot_type, input$var, input$second_in)
     
@@ -486,5 +680,24 @@ function(input, output, session) {
     }
   })
 
+  observeEvent(event_data("plotly_legendclick"), {
+    # Get the legend item clicked
+    click_data <- event_data("plotly_legendclick")
+    
+    if (!is.null(click_data)) {
+      # Get the name of the clicked legend item
+      legend_item <- click_data$label
+      
+      # Remove the line from the plot by updating the plot
+      output$Plot <- renderPlotly({
+        p <- event_data("plotly_legendclick")
+        
+        if (!is.null(p)) {
+          plotlyProxy("Plot", session) %>%
+            plotly::hide_trace(legend_item)
+        }
+      })
+    }
+  })
   
 }
