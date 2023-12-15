@@ -17,11 +17,16 @@ library(grid)
 library(rstudioapi)
 
 #data and lists
-dataset2 <- readRDS(paste0(rstudioapi::getActiveProject(),"/data/cdphe_Mega_hr_fullweek23.rds"))
+dataset2 <- readRDS(paste0(rstudioapi::getActiveProject(),"/data/cdphe_Mega_hr_fullweek24.rds"))
+dataset3 <- readRDS(paste0(rstudioapi::getActiveProject(),"/data/cdphe_CFD_mega3.rds"))
 
 vars <- c("Site Type" = "site_type", "Room Type" = "room_type", 
           "Season" = "season", "Building Leakiness" = "leakiness", 
           "Number of Air Handlers" = "ah_groups")
+vars_mv <- c("Site Type" = "site_type", "Room Type" = "room_type", 
+          "Season" = "season", "Building Leakiness" = "leakiness", 
+          "Number of Air Handlers" = "ah_groups", "Day of Week" = "day_of_week", 
+          "Time of Day" = "tod")
 
 room_types2 <-   c("Kitchen", "Dining", "Office", "Reception", "Classroom", "Meeting",
                    "Gathering", "Break Room" = "Breakroom", "Corridor", "Bedroom", "Storage", 
@@ -39,6 +44,14 @@ air_hands <- c("Less than 10", "10 to 25", "More than 25")
 
 plot_types <- c("Hourly" = "1hr", "Daily" = "24hr", "Trend Line" = "trend", "Fluctuation Line" = "pattern")
 
+plot_types_mv <- c("Cumulative Frequency Distribution" = "cfd", "Choice 2" = "2", "Choice 3" = "3")
+
+pols <- c("CO2" = "co2", "PM2.5" = "pm25", "TVOC" = "voc", "Temp" = "temp", "RH" = "RH")
+
+dow_types <- c("Sunday", "Monday", "Tuesday", "Wednesday", 
+               "Thursday", "Friday", "Saturday")
+
+tod_types <- c("12am to 8am" = "12a-8a", "8am to 6pm" = "8a-6p", "6pm to 12am" = "6p-12a")
 
 #picker formatting fxn
 pickerFormat01 <- function(hex, icon, label) {
@@ -52,33 +65,6 @@ pickerFormat01 <- function(hex, icon, label) {
   )
 }
 
-#header java
-jsCode <- "
-shinyjs.initializeHeader = function() {
-  var currentSlide = 0;
-  var slides = $('.header-slide');
-  var totalSlides = slides.length;
-
-  function showSlide(index) {
-    slides.hide();
-    slides.eq(index).fadeIn();
-  }
-
-  // Show the initial slide
-  showSlide(currentSlide);
-
-  // Arrow click events
-  $('#right-arrow').click(function() {
-    currentSlide = (currentSlide + 1) % totalSlides;
-    showSlide(currentSlide);
-  });
-
-  $('#left-arrow').click(function() {
-    currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
-    showSlide(currentSlide);
-  });
-}
-"
 #univariable tab fxn 
 univ_tab <- function(tab_id) {
   
