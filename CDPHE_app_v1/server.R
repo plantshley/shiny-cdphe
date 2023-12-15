@@ -32,7 +32,8 @@ function(input, output, session) {
                                                      "<b>Value:</b>", round(selected_mv()$val, digits = 0),"<br>",
                                                      "<b>Percentage:</b>", paste0(round(selected_mv()$ecdf*100, digits =1), "%"), "<br>",
                                                      "<b>Site Type:</b>", selected_mv()$site_type,"<br>",
-                                                     "<b>Room Type:</b>", selected_mv()$room_type), HTML)), lwd = 0.25, ylim = c(0,1)) +
+                                                     "<b>Room Type:</b>", selected_mv()$room_type,"<br>",
+                                                     "<b>Season:</b>", selected_mv()$season), HTML)), lwd = 0.25, ylim = c(0,1)) +
                     geom_step(lwd = 0.25) +
                     ylab(NULL) + 
                     xlab("\nIndicator Value (ppm, μg/m3, ppb, °C, etc)\n") +
@@ -44,7 +45,7 @@ function(input, output, session) {
                         shape = NULL, 
                         size = 1, 
                         stroke = 1))) +
-                    facet_wrap(~pol, ncol = 1, scales = "free_x", #strip.position = "bottom",
+                    facet_wrap(~pol, ncol=1, scales = "free_x", #strip.position = "bottom",
                                labeller = as_labeller(c(co2 = "CO2 (ppm)", 
                                                         pm25 = "PM2.5 (μg/m3)",
                                                         voc = "TVOC (ppb)",
@@ -56,7 +57,7 @@ function(input, output, session) {
                       axis.text.y = element_text(family = "Bahnschrift", size = 10, hjust = 0),
                       #axis.title.y = element_text(family = "Bahnschrift", size = 12, margin = margin(r = 5, l = 1)),
                       axis.title.x = element_text(family = "Bahnschrift", size = 12, margin = margin(t = 5, b = 5, unit = "mm")),
-                      strip.text = element_text(face = "plain", angle = 0, size = 10, color = "black", family = "Bahnschrift",
+                      strip.text = element_text(face = "bold", angle = 0, size = 10, color = "black", family = "Bahnschrift",
                                                 margin = margin(t = 1.5, unit = "mm")),
                       strip.background = element_rect(fill = "#EDDFF9", size = 1),
                       #strip.placement = "outside", 
@@ -94,7 +95,7 @@ function(input, output, session) {
     updateTabsetPanel(session, "tabs", selected = "uni_tab")
     output$plot <- renderPlotly({ res = 96
     req(input$go, input$co2)
-    p <- ggplotly(height = 600,  
+    p <- ggplotly(height = 800,  
       ggplot() +
         geom_line(data = selected(), aes(x = how, y = co2, color = paste(site_id, id_room),
                                          text2 = map(paste(
@@ -105,7 +106,9 @@ function(input, output, session) {
                                            "<b>Hour of Week:</b>", selected()$how,"<br>",
                                            "<b>Day of Week:</b>", selected()$day_of_week,"<br>",
                                            "<b>Site Type:</b>", selected()$site_type,"<br>",
-                                           "<b>Room Type:</b>", selected()$room_type), HTML)), 
+                                           "<b>Room Type:</b>", selected()$room_type,"<br>",
+                                           "<b>Season:</b>", selected()$season, "<br>",
+                                           "<b>Datetime:</b>", selected()$date), HTML)), 
                   xlim = t(), lwd = 0.25, show.legend = TRUE, legendgroup = "legend-text") + 
         xlim(t()) +
         scale_color_manual(guide = "legend", 
@@ -116,8 +119,8 @@ function(input, output, session) {
             shape = NULL, 
             size = 1, 
             stroke = 1))) +
-        facet_wrap(~.data[[input$var]], ncol = 1, scales = "free_y") +
-        ylab("CO2 Concentration (ppm)\n") + xlab("\n Hour of Week (Sun ~ Sat)") +
+        facet_wrap(~.data[[input$var]], nrow = 4, scales = "free_y") +
+        ylab("CO2 Concentration (ppm)\n") + xlab("\n Hour of Week (Sun through Sat)") +
         scale_x_continuous(limits = t(), breaks = seq(min(t()[1]), max(t()[2]), by = 24),
                            minor_breaks = seq(min(t()[1]), max(t()[2]), by = 6), expand = c(0,0)) +
         
@@ -129,7 +132,7 @@ function(input, output, session) {
           strip.text = element_text(face = "plain", angle = 0, size = 10, color = "black", 
                                     margin = margin(t = 1.5, unit = "mm"), family = "Bahnschrift"),
           strip.background = element_rect(fill = "#EDDFF9", size = 1), 
-          panel.spacing.x = unit(0.5, "lines"),
+          panel.spacing.x = unit(-4, "mm"),
           plot.margin = margin(t = 10, r = 10, b = 10, l = 10, unit = "pt"),
           panel.background = element_rect(fill = "white", color = '#F0E7F1', linewidth =1.5),
           panel.grid = element_blank(),
@@ -176,7 +179,9 @@ function(input, output, session) {
                                            "<b>Hour of Week:</b>", selected()$how,"<br>",
                                            "<b>Day of Week:</b>", selected()$day_of_week,"<br>",
                                            "<b>Site Type:</b>", selected()$site_type,"<br>",
-                                           "<b>Room Type:</b>", selected()$room_type), HTML)), 
+                                           "<b>Room Type:</b>", selected()$room_type,"<br>",
+                                           "<b>Season:</b>", selected()$season, "<br>",
+                                           "<b>Datetime:</b>", selected()$date), HTML)), 
                   xlim = t(), lwd = 0.25, show.legend = TRUE, legendgroup = "legend-text") + 
         xlim(t()) +
         scale_color_manual(guide = "legend", 
@@ -200,8 +205,8 @@ function(input, output, session) {
           strip.text = element_text(face = "plain", angle = 0, size = 10, color = "black", 
                                     margin = margin(t = 1.5, unit = "mm"), family = "Bahnschrift"),
           strip.background = element_rect(fill = "#EDDFF9", size = 1), 
-          panel.margin = unit(0.5, "lines"),
-          plot.margin = margin(t = 25, r = 15, b = 25, l = 20, unit = "pt"),
+          panel.spacing.x = unit(0.5, "mm"),
+          plot.margin = margin(t = 10, r = 10, b = 10, l = 10, unit = "pt"),
           panel.background = element_rect(fill = "white", color = '#F0E7F1', linewidth =1.5),
           panel.grid = element_blank(),
           panel.grid.major.y = element_line(color = "#F0E7F1", size = 0.25),
@@ -246,7 +251,9 @@ function(input, output, session) {
                                            "<b>Hour of Week:</b>", selected()$how,"<br>",
                                            "<b>Day of Week:</b>", selected()$day_of_week,"<br>",
                                            "<b>Site Type:</b>", selected()$site_type,"<br>",
-                                           "<b>Room Type:</b>", selected()$room_type), HTML)), 
+                                           "<b>Room Type:</b>", selected()$room_type,"<br>",
+                                           "<b>Season:</b>", selected()$season, "<br>",
+                                           "<b>Datetime:</b>", selected()$date), HTML)), 
                   xlim = t(), lwd = 0.25, show.legend = TRUE, legendgroup = "legend-text") + 
         xlim(t()) +
         scale_color_manual(guide = "legend", 
@@ -270,8 +277,8 @@ function(input, output, session) {
           strip.text = element_text(face = "plain", angle = 0, size = 10, color = "black", 
                                     margin = margin(t = 1.5, unit = "mm"), family = "Bahnschrift"),
           strip.background = element_rect(fill = "#EDDFF9", size = 1), 
-          panel.margin = unit(0.5, "lines"),
-          plot.margin = margin(t = 25, r = 15, b = 25, l = 20, unit = "pt"),
+          panel.spacing.x = unit(0.5, "mm"),
+          plot.margin = margin(t = 10, r = 10, b = 10, l = 10, unit = "pt"),
           panel.background = element_rect(fill = "white", color = '#F0E7F1', linewidth =1.5),
           panel.grid = element_blank(),
           panel.grid.major.y = element_line(color = "#F0E7F1", size = 0.25),
@@ -316,7 +323,9 @@ function(input, output, session) {
                                            "<b>Hour of Week:</b>", selected()$how,"<br>",
                                            "<b>Day of Week:</b>", selected()$day_of_week,"<br>",
                                            "<b>Site Type:</b>", selected()$site_type,"<br>",
-                                           "<b>Room Type:</b>", selected()$room_type), HTML)), 
+                                           "<b>Room Type:</b>", selected()$room_type,"<br>",
+                                           "<b>Season:</b>", selected()$season, "<br>",
+                                           "<b>Datetime:</b>", selected()$date), HTML)), 
                   xlim = t(), lwd = 0.25, show.legend = TRUE, legendgroup = "legend-text") + 
         xlim(t()) +
         scale_color_manual(guide = "legend", 
@@ -340,8 +349,8 @@ function(input, output, session) {
           strip.text = element_text(face = "plain", angle = 0, size = 10, color = "black", 
                                     margin = margin(t = 1.5, unit = "mm"), family = "Bahnschrift"),
           strip.background = element_rect(fill = "#EDDFF9", size = 1), 
-          panel.margin = unit(0.5, "lines"),
-          plot.margin = margin(t = 25, r = 15, b = 25, l = 20, unit = "pt"),
+          panel.spacing.x = unit(0.5, "mm"),
+          plot.margin = margin(t = 10, r = 10, b = 10, l = 10, unit = "pt"),
           panel.background = element_rect(fill = "white", color = '#F0E7F1', linewidth =1.5),
           panel.grid = element_blank(),
           panel.grid.major.y = element_line(color = "#F0E7F1", size = 0.25),
@@ -386,7 +395,9 @@ function(input, output, session) {
                                            "<b>Hour of Week:</b>", selected()$how,"<br>",
                                            "<b>Day of Week:</b>", selected()$day_of_week,"<br>",
                                            "<b>Site Type:</b>", selected()$site_type,"<br>",
-                                           "<b>Room Type:</b>", selected()$room_type), HTML)), 
+                                           "<b>Room Type:</b>", selected()$room_type,"<br>",
+                                           "<b>Season:</b>", selected()$season, "<br>",
+                                           "<b>Datetime:</b>", selected()$date), HTML)), 
                   xlim = t(), lwd = 0.25, show.legend = TRUE, legendgroup = "legend-text") + 
         xlim(t()) +
         scale_color_manual(guide = "legend", 
@@ -398,7 +409,7 @@ function(input, output, session) {
             size = 1, 
             stroke = 1))) +
         facet_wrap(~.data[[input$var]], ncol = 1, scales = "free_y") +
-        ylab("Relative Humidity (%)\n") + xlab("\n Hour of Week (Sun ~ Sat)") +
+        ylab("Relative Humidity (%)\n\n") + xlab("\n Hour of Week (Sun ~ Sat)") +
         scale_x_continuous(limits = t(), breaks = seq(min(t()[1]), max(t()[2]), by = 24),
                            minor_breaks = seq(min(t()[1]), max(t()[2]), by = 6), expand = c(0,0)) +
         
@@ -410,15 +421,15 @@ function(input, output, session) {
           strip.text = element_text(face = "plain", angle = 0, size = 10, color = "black", 
                                     margin = margin(t = 1.5, unit = "mm"), family = "Bahnschrift"),
           strip.background = element_rect(fill = "#EDDFF9", size = 1), 
-          panel.margin = unit(0.5, "lines"),
-          plot.margin = margin(t = 25, r = 15, b = 25, l = 20, unit = "pt"),
+          panel.spacing.x = unit(0.5, "mm"),
+          #panel.spacing.y = unit(5, "mm"),
+          plot.margin = margin(t = 10, r = 10, b = 10, l = 10, unit = "pt"),
           panel.background = element_rect(fill = "white", color = '#F0E7F1', linewidth =1.5),
           panel.grid = element_blank(),
           panel.grid.major.y = element_line(color = "#F0E7F1", size = 0.25),
           panel.grid.minor.y = element_line(color = "#F0E7F1", size = 0.25),
           panel.grid.major.x = element_line(color = "#F0E7F1", size = 0.25),
           panel.grid.minor.x = element_line(color = "#F0E7F1", size = 0.25)),
-          #panel.spacing.x = unit(0.2, "lines"), 
       tooltip = "text"
     )
     p5 <- layout(
@@ -529,6 +540,26 @@ function(input, output, session) {
                           pickerFormat01("#FFCFC5", "fa fa-solid fa-frog fa-bounce", "10 to 25"),
                           pickerFormat01("#FFCFC5", "fa fa-solid fa-dragon", "More than 25")))
       ) 
+    } else if (input$var_mv == "day_of_week") {
+      updatePickerInput(session,"second_in_mv", "Day of Week",
+                        choices = dow_types,
+                        choicesOpt = list(content = c(
+                          pickerFormat01("#FFE2BA", "fa fa-regular fa-sun", "Sunday"),
+                          pickerFormat01("#FFE2BA", "fa fa-solid fa-m", "Monday"),
+                          pickerFormat01("#FFE2BA", "fa fa-solid fa-t", "Tuesday"),
+                          pickerFormat01("#FFE2BA", "fa fa-solid fa-w", "Wednesday"),
+                          pickerFormat01("#FFE2BA", "fa fa-solid fa-r", "Thursday"), 
+                          pickerFormat01("#FFE2BA", "fa fa-solid fa-f", "Friday"),
+                          pickerFormat01("#FFE2BA", "fa fa-regular fa-face-smile fa-spin", "Saturday")))
+      )
+    } else if (input$var_mv == "tod") {
+      updatePickerInput(session,"second_in_mv", "Time of Day",
+                        choices = tod_types,
+                        choicesOpt = list(content = c(
+                          pickerFormat01("#F9EEAB", "fa fa-solid fa-mug-saucer", "12am to 8am"),
+                          pickerFormat01("#F9EEAB", "fa fa-solid fa-briefcase", "8am to 6pm"),
+                          pickerFormat01("#F9EEAB", "fa fa-solid fa-cloud-moon", "6pm to 12am")))
+      )
       
     } else {
       updateSelectInput(session, "second_in_mv", "Select an option", choices = NULL)

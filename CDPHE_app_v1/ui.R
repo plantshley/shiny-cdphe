@@ -23,6 +23,7 @@ fluidPage(
                  actionBttn("voc", "TVOC"),
                  actionBttn("temp", "Temp"),
                  actionBttn("rh", "RH"),
+                 actionBttn("mv", "ALL"), 
                  actionBttn("glossary", "", icon = icon("book", lib = "font-awesome"))
     ),
     
@@ -32,6 +33,7 @@ fluidPage(
                 
       source(paste0(getActiveProject(), "/ui/tab_home.R"))$value,
       source(paste0(getActiveProject(), "/ui/tab_univ.R"))$value,
+      source(paste0(getActiveProject(), "/ui/tab_mv.R"))$value,
       source(paste0(getActiveProject(), "/ui/tab_gloss.R"))$value
       )
     )
