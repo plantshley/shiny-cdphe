@@ -24,7 +24,7 @@
         font-weight: normal; 
       }
     #co2_title, #pm25_title, #voc_title, 
-    #temp_title, #rh_title, #gloss_title {
+    #temp_title, #rh_title, #gloss_title, #mv_title, #plot_title {
         font-family: Bahnschrift;
         font-stretch: expanded; 
         font-size: 20px;
@@ -35,7 +35,16 @@
         background: linear-gradient(to right, #C268DD, #DD7E68)!important;
         -webkit-background-clip: text !important;
         -webkit-text-fill-color: transparent !important;
-        width: 25%;
+        width: 30%;
+    }
+    #plot_title {
+        width: 100% !important;
+        display: flex;
+        justify-content: flex-end;
+        background: linear-gradient(to left, #DD68A3, #DD7E68)!important;
+        -webkit-background-clip: text !important;
+        -webkit-text-fill-color: transparent !important;
+      
     }
 /* Carousel */
       #hh_well{
@@ -57,6 +66,10 @@
       .carousel-indicators {
         bottom: 0px;
         margin-bottom: 5px;
+      }
+      .carousel-indicators.active li {
+        border: white;
+        background-color: pink;
       }
       .carousel-control.right, .carousel-control.left,
       .carousel-control.right:focus, .carousel-control.left:focus{
@@ -93,8 +106,8 @@
         padding-right; 30px; 
       }
 /* Plotly */
-      #plot-well {
-        height: 625px;
+      #plot-well, #plot-well_mv {
+        height: 825px;
         background-color: transparent;
         border-color: transparent; 
         box-shadow: none;
@@ -213,7 +226,7 @@
       #glossary.bttn-unite.bttn-default:after{
         background: #F0EFFF;
       }
-      #co2, #pm25, #voc, #temp, #rh {
+      #co2, #pm25, #voc, #temp, #rh, #mv {
         display:flex;
         height: 80px;
         width: 80px;
@@ -269,11 +282,35 @@
       #rh.bttn-unite.bttn-default:after {
         background: #D8F1FF;
       }
-      #go {
+      #mv {
+        background-color: #86E6E8 !important;
+      }
+      #mv.bttn-unite.bttn-default:before {
+        background: #A3F2F4;
+      }
+      #mv.bttn-unite.bttn-default:after {
+        background: #D2F5F5;
+      }
+      #go, #go_mv {
         background-color: #BEB7FF;
         color: black;
         font-size: 15px;
         font-weight: normal;
+      }
+      .btn-group>.btn:first-child {
+        border-radius: 50px;
+        background-color: white;
+        border-color: white;
+        padding-top: 2px;
+        padding-bottom: 2px;
+        padding-left: 7px;
+        padding-right: 7px;
+      }
+      .btn-group>.btn.active,.btn-group>.btn.active, 
+      .btn-group>.btn:active{
+        color: #D367D6;
+        background-color: #E4D0FD;
+        
       }
  
 /*Page layout elements*/    
@@ -292,13 +329,16 @@
         }
       #tabs {display: none;}
                   
-      #top-well, #bottom-well {
+      #top-well, #bottom-well, #top-well_mv, #bottom-well_mv {
         background-color: #F3F5FB;
         border-color: transparent; 
         box-shadow: none;
         border-radius: 30px;
         }
-      #bottom-well {
+      #top-well_mv {
+        margin-bottom: 0px;
+      }
+      #bottom-well, #bottom-well_mv {
         display: flex;
         justify-content: center;
         align-items: center;
@@ -310,7 +350,8 @@
         display: flex;
         justify-content: center;
       }
-      #gloss_row1 {
+      #gloss_row1, #mv_plot_row {
         display: flex;
         justify-content: left;
       }
+  
