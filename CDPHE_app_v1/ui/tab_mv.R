@@ -28,9 +28,10 @@ tabPanel(value = "mv_tab", id = "mv_tab", title = "mv",
                                        pickerFormat01("#FFCEDA", "fa-solid fa-moon fa-sm", "Leakiness"),
                                        pickerFormat01("#FFCFC5", "fa fa-clover", "Air Handlers"), 
                                        pickerFormat01("#FFE2BA", "fa fa-solid fa-calendar-week", "Day of Week"), 
-                                       pickerFormat01("#F9EEAB", "fa fa-solid fa-clock", "Time of Day"))),
+                                       pickerFormat01("#F9EEAB", "fa fa-solid fa-clock", "Time of Day"),
+                                       pickerFormat01("#E5EFAB", "fa fa-solid fa-clock", "Hour of Day"))),
                                    options = pickerOptions(container = "body", width = "fit", iconBase = "fas")),
-                       width = 4, offset = 0)),
+                       width = 5, offset = 0)),
                    
                    fluidRow(
                      
@@ -49,20 +50,22 @@ tabPanel(value = "mv_tab", id = "mv_tab", title = "mv",
                                    multiple =FALSE, options = pickerOptions(container = "body", iconBase = "fas",
                                                                            selectedTextFormat = "count >1",
                                                                            tickIcon = FALSE, width = "fit", inline = TRUE)), 
-                       width = 4, offset = 0)),
+                       width = 5, offset = 0)),
                      
                    fluidRow(align = "center",
         
                              actionBttn("go_mv", "Generate Plots", style = "pill", icon("rocket","fa-lg", lib = "font-awesome")))
          ),
          
-         wellPanel(id = "plot-well_mv", 
+         wellPanel(id = "plot-well_mv", width = "90%",
+                   fluidRow(id = "mv_plot_pols",
+                            uiOutput("plot_pols")),
                    fluidRow(id = "mv_plot_row", 
                      column(width = 4, 
                        checkboxGroupButtons(
                        inputId = "pol",
                        choices = pols,
-                       selected = "co2", 
+                       selected = c("co2", "pm25"), 
                        individual = TRUE,
                        checkIcon = list(
                          yes = tags$i(class = "fa fa-circle", 
