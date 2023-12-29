@@ -2,6 +2,7 @@ source(paste0(rstudioapi::getActiveProject(),"/ui/app_funs.R"))
 source("ui.R")
 
 function(input, output, session) {
+#Glossary Search
   
 #Tab buttons
   #HOME TAB
@@ -11,6 +12,23 @@ function(input, output, session) {
     })
     updateTabsetPanel(session, "tabs", selected = "home_tab")
   })
+  
+  observeEvent(input$hb_tabs, {
+    
+  if (input$hb_tabs == "About the App") {
+    output$scroll <- renderUI({
+      scroll_reveal(target = c("#img1", "#img2"), duration = 2000, distance = "300px") 
+      
+    })
+  } else if (input$hb_tabs == "How to Use the App"){
+    output$scroll <- renderUI({
+      scroll_reveal(target = c("#img3", "#img4", "#img5"), duration = 2000, distance = "300px") 
+    })
+  } else
+    output$scroll <- renderUI({
+      scroll_reveal(target = c("#img1", "#img2"), duration = 2000, distance = "300px")
+    })
+  })
 ###### MV TAB######
   observeEvent(input$mv, {
     output$title <- renderUI({
@@ -19,11 +37,18 @@ function(input, output, session) {
     output$plot_title <- renderUI({
       h4(id = "plot_title", plot_title())
     })
+    output$plot_pols <- renderUI({
+      h5(id = "mv_plot_pols", plot_pols())
+    })
     updateTabsetPanel(session, "tabs", selected = "mv_tab")
     
+
     output$plot_mv <- renderPlotly({ res = 96
     req(input$go_mv, input$mv)
-    p6 <- ggplotly(height = 1000, 
+    
+    # CDF PLOT
+    if (mv_pt() == "cfd") {
+    p6 <- ggplotly(height = 900, 
                   ggplot(data = selected_mv(), aes(x = val, y = ecdf, color = paste(site_id, id_room),
                                                    text2 = map(paste(
                                                      selected_mv()$site_id, " ", selected_mv()$room), HTML), 
@@ -35,8 +60,8 @@ function(input, output, session) {
                                                      "<b>Room Type:</b>", selected_mv()$room_type,"<br>",
                                                      "<b>Season:</b>", selected_mv()$season), HTML)), lwd = 0.25, ylim = c(0,1)) +
                     geom_step(lwd = 0.25) +
-                    ylab(NULL) + 
-                    xlab("\nIndicator Value (ppm, μg/m3, ppb, °C, etc)\n") +
+                    ylab("Percent of selected subvariable data\n") +
+                    xlab("\nSelected Indicator Value (ppm, μg/m3, ppb, °C, etc)\n") +
                     scale_color_manual(guide = "legend", 
                                        labels = "text2",
                                        values = colorsch_mv()) + 
@@ -52,11 +77,13 @@ function(input, output, session) {
                                                         temp = "Tempurature (°C)",
                                                         RH = "Relative Humidity (%)"))) +
                     theme(
-                      axis.text.x = element_text(family = "Bahnschrift", angle = 0, hjust = 0, size = 10, 
+                      text = element_text(family = "Bahnschrift", margin = margin(b = 5, unit = "mm")), 
+                      axis.text.x = element_text(family = "Bahnschrift", angle = 0, hjust = 0, size = 8, 
                                                  margin = margin(b = 1, unit = "mm")), 
-                      axis.text.y = element_text(family = "Bahnschrift", size = 10, hjust = 0),
-                      #axis.title.y = element_text(family = "Bahnschrift", size = 12, margin = margin(r = 5, l = 1)),
-                      axis.title.x = element_text(family = "Bahnschrift", size = 12, margin = margin(t = 5, b = 5, unit = "mm")),
+                      axis.text.y = element_text(family = "Bahnschrift", size = 8, hjust = 0),
+                      axis.title.y = element_text(family = "Bahnschrift", size = 10, 
+                                                  margin = margin(r = 5, l = 5, t = 5, b = 5,  unit = "mm")),
+                      axis.title.x = element_text(family = "Bahnschrift", size = 10, margin = margin(t = 5, b = 5, unit = "mm")),
                       strip.text = element_text(face = "bold", angle = 0, size = 10, color = "black", family = "Bahnschrift",
                                                 margin = margin(t = 1.5, unit = "mm")),
                       strip.background = element_rect(fill = "#EDDFF9", size = 1),
@@ -74,6 +101,80 @@ function(input, output, session) {
     p6 <- layout(
       p6, 
       legend = list(title = "", font = list(family = "Bahnschrift", size = 12),
+                    itemwidth = 1)
+      #xaxis = list(title = list(standoff = 40, automargin = TRUE), showgrid = TRUE, minorgridwidth = 0.25, minorgridcolor = "#F0E7F1"),
+      #yaxis = list(title = list(standoff = 40, automargin = TRUE))
+    ) %>%
+      config(displayModeBar = "static", displaylogo = FALSE, 
+             modeBarButtonsToRemove = list("sendDataToCloud", "toImage", "autoScale2d", 
+                                           "resetScale2d", 
+                                           "select2d", "lasso2d", 
+                                           "zoomIn2d", "zoomOut2d", "toggleSpikelines")) %>%
+      event_register('plotly_legendclick')
+    
+    w_mv$hide()
+    p6
+    
+# NORMALIZED PLOT    
+    } else if (mv_pt() == "norm") {
+      
+    p7 <- ggplotly(height = 800, 
+                   ggplot() +
+                     geom_line(data = selected_mv(), aes(x = how, y = val, color = paste(site_id, id_room),
+                                                    text2 = map(paste(
+                                                      selected_mv()$site_id, " ", selected_mv()$room), HTML), 
+                                                    text = map(paste(  
+                                                      "<b> Site ID:", paste(selected_mv()$site_id, selected_mv()$id_room),"<br>",
+                                                      "<b>Scaled Value:</b>", round(selected_mv()$val, digits = 2),"<br>",
+                                                      "<b>Hour:</b>", selected_mv()$how,"<br>",
+                                                      "<b>Day of Week:</b>", selected_mv()$day_of_week,"<br>",
+                                                      "<b>Site Type:</b>", selected_mv()$site_type,"<br>",
+                                                      "<b>Room Type:</b>", selected_mv()$room_type,"<br>",
+                                                      "<b>Season:</b>", selected_mv()$season, "<br>",
+                                                      "<b>Datetime:</b>", selected_mv()$date), HTML)), 
+                               lwd = 0.2, ylim = c(0,1)) +
+                     scale_x_continuous(breaks = seq(0, max(selected_mv()$how), by = 24)) +
+                     ylab(" ") + 
+                     labs(x = "\nHour (0 = 12am the first Sunday of data)\n") +
+                     scale_color_manual(guide = "legend", 
+                                        labels = "text2",
+                                        values = colorsch_mv()) + 
+                     guides(fill= guide_legend(
+                       override.aes = list(
+                         shape = NULL, 
+                         size = 1, 
+                         stroke = 1))) +
+                     facet_wrap(~pol, ncol=1, scales = "fixed", #strip.position = "bottom",
+                                labeller = as_labeller(c(co2 = "CO2", 
+                                                         pm25 = "PM2.5",
+                                                         voc = "TVOC",
+                                                         temp = "Tempurature",
+                                                         RH = "Relative Humidity"))) +
+                     theme(
+                       axis.text.x = element_text(family = "Bahnschrift", angle = 0, hjust = 0, size = 8, 
+                                                  margin = margin(b = 1, unit = "mm")), 
+                       axis.text.y = element_text(family = "Bahnschrift", size = 8, hjust = 0),
+                       axis.title.y = element_text(family = "Bahnschrift", size = 10, 
+                                                   margin = margin(r = 5, l = 5, unit = "mm")),
+                       axis.title.x = element_text(family = "Bahnschrift", size = 10, 
+                                                   margin = margin(t = 5, r = 0, b = 5, l = 0, unit = "mm")),
+                       strip.text = element_text(face = "bold", angle = 0, size = 10, color = "black", family = "Bahnschrift",
+                                                 margin = margin(t = 1.5, unit = "mm")),
+                       strip.background = element_rect(fill = "#EDDFF9", size = 1),
+                       #strip.placement = "outside", 
+                       panel.spacing.x = unit(0.5, "mm"),
+                       plot.margin = margin(t = 0, r = 0, b = 0, l = 0, unit = "pt"),
+                       panel.background = element_rect(fill = "white", color = '#F0E7F1', linewidth =1.5),
+                       panel.grid = element_blank(),
+                       panel.grid.major.y = element_line(color = "#F0E7F1", size = 0.25),
+                       panel.grid.minor.y = element_line(color = "#F0E7F1", size = 0.25),
+                       panel.grid.major.x = element_line(color = "#F0E7F1", size = 0.25),
+                       panel.grid.minor.x = element_line(color = "#F0E7F1", size = 0.25)),
+                   tooltip = "text"
+    )
+    p7 <- layout(
+      p7, 
+      legend = list(title = "", font = list(family = "Bahnschrift", size = 12),
                     itemwidth = 1),
       xaxis = list(showgrid = TRUE, minorgridwidth = 0.25, minorgridcolor = "#F0E7F1")
     ) %>%
@@ -81,9 +182,92 @@ function(input, output, session) {
              modeBarButtonsToRemove = list("sendDataToCloud", "toImage", "autoScale2d", 
                                            "resetScale2d", 
                                            "select2d", "lasso2d", 
-                                           "zoomIn2d", "zoomOut2d", "toggleSpikelines"))
-    w_mv$hide()
+                                           "zoomIn2d", "zoomOut2d", "toggleSpikelines")
+      ) %>%
+      event_register('plotly_legendclick')
+    
+    w$hide()
+    p7
+
+#SCATTER PLOT
+    } else if (mv_pt() == "scat") {
+      p8 <- ggplotly(height = 600,
+                     ggplot() +
+                       geom_abline(slope=1, intercept = 0, lty = "11", color = "lightgrey", alpha = 0.75) +
+                       geom_point(data = selected_mv(), aes(x = .data[[mv_pol()[1]]], y = .data[[mv_pol()[2]]], color = paste(site_id, id_room),
+                                                           text2 = map(paste(
+                                                             selected_mv()$site_id, " ", selected_mv()$room), HTML), 
+                                                           text = map(paste(  
+                                                             "<b> Site ID:", paste(selected_mv()$site_id, selected_mv()$id_room),"<br>",
+                                                             "<b>Y-Value:</b>", round(selected_mv()[[mv_pol()[2]]], digits = 2),"<br>",
+                                                             "<b>X-Value:</b>", round(selected_mv()[[mv_pol()[1]]], digits = 2),"<br>",
+                                                             "<b>Day of Week:</b>", selected_mv()$day_of_week,"<br>",
+                                                             "<b>Site Type:</b>", selected_mv()$site_type,"<br>",
+                                                             "<b>Room Type:</b>", selected_mv()$room_type,"<br>",
+                                                             "<b>Season:</b>", selected_mv()$season, "<br>",
+                                                             #hour of day
+                                                             "<b>Datetime:</b>", selected_mv()$date), HTML)), 
+                                  lwd = 0.25, size = 0.5) +
+                       geom_abline(slope=1, intercept = 0, lty = "11", color = "lightgrey", alpha = 0.75) +
+                       ylab(paste(toupper(mv_pol()[2]), "\n")) + 
+                       xlab(paste("\n",toupper(mv_pol()[1]))) +
+                       scale_color_manual(guide = "legend", 
+                                          labels = "text2",
+                                          values = colorsch_mv()) + 
+                       guides(fill= guide_legend(
+                         override.aes = list(
+                           shape = NULL, 
+                           size = 1, 
+                           stroke = 1))) +
+                       #facet_wrap(~pol, ncol=1, scales = "fixed", #strip.position = "bottom",
+                           #       labeller = as_labeller(c(co2 = "CO2", 
+                            #                               pm25 = "PM2.5",
+                             #                              voc = "TVOC",
+                              #                             temp = "Tempurature",
+                               #                            RH = "Relative Humidity"))) +
+                       theme(
+                         axis.text.x = element_text(family = "Bahnschrift", angle = 0, hjust = 0, size = 10, 
+                                                    margin = margin(b = 1, unit = "mm")), 
+                         axis.text.y = element_text(family = "Bahnschrift", size = 10, hjust = 0),
+                         axis.title.y = element_text(family = "Bahnschrift", size = 10, 
+                                                     margin = margin(r = 5, l = 5, unit = "mm")),
+                         axis.title.x = element_text(family = "Bahnschrift", size = 10, 
+                                                     margin = margin(t = 5, b = 5, unit = "mm")),
+                         strip.text = element_text(face = "bold", angle = 0, size = 10, color = "black", family = "Bahnschrift",
+                                                   margin = margin(t = 1.5, unit = "mm")),
+                         strip.background = element_rect(fill = "#EDDFF9", size = 1),
+                         #strip.placement = "outside", 
+                         panel.spacing.x = unit(0.5, "mm"),
+                         plot.margin = margin(t = 0, r = 0, b = 0, l = 0, unit = "pt"),
+                         panel.background = element_rect(fill = "white", color = '#F0E7F1', linewidth =1.5),
+                         panel.grid = element_blank(),
+                         panel.grid.major.y = element_line(color = "#F0E7F1", size = 0.25),
+                         panel.grid.minor.y = element_line(color = "#F0E7F1", size = 0.25),
+                         panel.grid.major.x = element_line(color = "#F0E7F1", size = 0.25),
+                         panel.grid.minor.x = element_line(color = "#F0E7F1", size = 0.25)),
+                     tooltip = "text"
+      )
+      p8 <- layout(
+        p8, 
+        legend = list(title = "", font = list(family = "Bahnschrift", size = 12),
+                      itemwidth = 1),
+        xaxis = list(showgrid = TRUE, minorgridwidth = 0.25, minorgridcolor = "#F0E7F1")
+      ) %>%
+        config(displayModeBar = "static", displaylogo = FALSE, 
+               modeBarButtonsToRemove = list("sendDataToCloud", "toImage", "autoScale2d", 
+                                             "resetScale2d", 
+                                             "select2d", "lasso2d", 
+                                             "zoomIn2d", "zoomOut2d", "toggleSpikelines")
+        ) %>%
+        event_register('plotly_legendclick')
+      
+      w$hide()
+      p8
+      
+    } else {
     p6
+    }
+    
     })
     }) 
 ######CO2 TAB######
@@ -119,7 +303,7 @@ function(input, output, session) {
             shape = NULL, 
             size = 1, 
             stroke = 1))) +
-        facet_wrap(~.data[[input$var]], nrow = 4, scales = "free_y") +
+        facet_wrap(~.data[[var_uni()]], nrow = 4, scales = "free_y") +
         ylab("CO2 Concentration (ppm)\n") + xlab("\n Hour of Week (Sun through Sat)") +
         scale_x_continuous(limits = t(), breaks = seq(min(t()[1]), max(t()[2]), by = 24),
                            minor_breaks = seq(min(t()[1]), max(t()[2]), by = 6), expand = c(0,0)) +
@@ -153,7 +337,9 @@ function(input, output, session) {
                                            "resetScale2d", 
                                            "select2d", "lasso2d", 
                                            "zoomIn2d", "zoomOut2d", "toggleSpikelines")
-      )
+      ) %>%
+      event_register('plotly_legendclick')
+    
     w$hide()
     p
     })
@@ -192,7 +378,7 @@ function(input, output, session) {
             shape = NULL, 
             size = 1, 
             stroke = 1))) +
-        facet_wrap(~.data[[input$var]], ncol = 1, scales = "free_y") +
+        facet_wrap(~.data[[var_uni()]], ncol = 1, scales = "free_y") +
         ylab("PM2.5 Concentration (μg/m3)\n") + xlab("\n Hour of Week (Sun ~ Sat)") +
         scale_x_continuous(limits = t(), breaks = seq(min(t()[1]), max(t()[2]), by = 24),
                            minor_breaks = seq(min(t()[1]), max(t()[2]), by = 6), expand = c(0,0)) +
@@ -225,7 +411,9 @@ function(input, output, session) {
              modeBarButtonsToRemove = list("sendDataToCloud", "toImage", "autoScale2d", 
                                            "resetScale2d", "select2d", "lasso2d", 
                                            "zoomIn2d", "zoomOut2d", "toggleSpikelines")
-      )
+      ) %>%
+      event_register('plotly_legendclick')
+    
     w$hide()
     p2
     })
@@ -264,7 +452,7 @@ function(input, output, session) {
             shape = NULL, 
             size = 1, 
             stroke = 1))) +
-        facet_wrap(~.data[[input$var]], ncol = 1, scales = "free_y") +
+        facet_wrap(~.data[[var_uni()]], ncol = 1, scales = "free_y") +
         ylab("TVOC Concentration (ppb)\n") + xlab("\n Hour of Week (Sun ~ Sat)") +
         scale_x_continuous(limits = t(), breaks = seq(min(t()[1]), max(t()[2]), by = 24),
                            minor_breaks = seq(min(t()[1]), max(t()[2]), by = 6), expand = c(0,0)) +
@@ -297,7 +485,9 @@ function(input, output, session) {
              modeBarButtonsToRemove = list("sendDataToCloud", "toImage", "autoScale2d", 
                                            "resetScale2d", "select2d", "lasso2d", 
                                            "zoomIn2d", "zoomOut2d", "toggleSpikelines")
-      )
+      ) %>%
+      event_register('plotly_legendclick')
+    
     w$hide()
     p3
     })
@@ -336,7 +526,7 @@ function(input, output, session) {
             shape = NULL, 
             size = 1, 
             stroke = 1))) +
-        facet_wrap(~.data[[input$var]], ncol = 1, scales = "free_y") +
+        facet_wrap(~.data[[var_uni()]], ncol = 1, scales = "free_y") +
         ylab("Temperature (°C)\n") + xlab("\n Hour of Week (Sun ~ Sat)") +
         scale_x_continuous(limits = t(), breaks = seq(min(t()[1]), max(t()[2]), by = 24),
                            minor_breaks = seq(min(t()[1]), max(t()[2]), by = 6), expand = c(0,0)) +
@@ -369,7 +559,9 @@ function(input, output, session) {
              modeBarButtonsToRemove = list("sendDataToCloud", "toImage", "autoScale2d", 
                                            "resetScale2d", "select2d", "lasso2d", 
                                            "zoomIn2d", "zoomOut2d", "toggleSpikelines")
-      )
+      ) %>%
+      event_register('plotly_legendclick')
+    
     w$hide()
     p4
     })
@@ -408,7 +600,7 @@ function(input, output, session) {
             shape = NULL, 
             size = 1, 
             stroke = 1))) +
-        facet_wrap(~.data[[input$var]], ncol = 1, scales = "free_y") +
+        facet_wrap(~.data[[var_uni()]], ncol = 1, scales = "free_y") +
         ylab("Relative Humidity (%)\n\n") + xlab("\n Hour of Week (Sun ~ Sat)") +
         scale_x_continuous(limits = t(), breaks = seq(min(t()[1]), max(t()[2]), by = 24),
                            minor_breaks = seq(min(t()[1]), max(t()[2]), by = 6), expand = c(0,0)) +
@@ -442,7 +634,9 @@ function(input, output, session) {
              modeBarButtonsToRemove = list("sendDataToCloud", "toImage", "autoScale2d", 
                                            "resetScale2d", "select2d", "lasso2d", 
                                            "zoomIn2d", "zoomOut2d", "toggleSpikelines")
-      )
+      ) %>%
+      event_register('plotly_legendclick')
+    
     
     w$hide()
     p5
@@ -460,7 +654,10 @@ function(input, output, session) {
 
 #Reactives
   t <- eventReactive(input$go,{input$hour})
+  var_uni <- eventReactive(input$go, {input$var})
   
+  mv_pol <- eventReactive(input$go_mv, {input$pol})
+  mv_pt <- eventReactive(input$go_mv, {input$plot_type_mv})
   colorsch <- eventReactive(input$go, {
     num_vals <- length(unique(paste(selected()$site_id, selected()$id_room)))
     switch(input$colors,
@@ -481,7 +678,7 @@ function(input, output, session) {
 #Subvariables (mv tab)
   observeEvent(input$var_mv, {
     if (input$var_mv == "site_type") {
-      updatePickerInput(session, "second_in_mv", "Choose site type(s):",
+      updatePickerInput(session, "second_in_mv", "Choose site type:",
                         choices = site_types,
                         choicesOpt = list(content = c(
                           pickerFormat01("#E7BEF9", "fa fa-child-reaching fa-bounce", "Childcare"),
@@ -494,7 +691,7 @@ function(input, output, session) {
       )
       
     } else if (input$var_mv == "room_type") {
-      updatePickerInput(session,"second_in_mv", "Choose room type(s):",
+      updatePickerInput(session,"second_in_mv", "Choose room type:",
                         choices = room_types2,
                         choicesOpt = list(content = c(
                           pickerFormat01("#F2BEF2", "fa fa-kitchen-set", "Kitchen"),
@@ -514,7 +711,7 @@ function(input, output, session) {
       ) 
       
     } else if (input$var_mv == "leakiness") {
-      updatePickerInput(session,"second_in_mv", "Building Leakiness",
+      updatePickerInput(session,"second_in_mv", "Building Leakiness:",
                         choices = leaky,
                         choicesOpt = list(content = c(
                           pickerFormat01("#FFCEDA", "fa fa-stroopwafel fa-xs", "Leaky"),
@@ -523,7 +720,7 @@ function(input, output, session) {
       ) 
       
     } else if (input$var_mv == "season") {
-      updatePickerInput(session,"second_in_mv", "Choose season(s)",
+      updatePickerInput(session,"second_in_mv", "Choose season:",
                         choices = seasons,
                         choicesOpt = list(content = c(
                           pickerFormat01("#FFC9EF", "fa fa-solid fa-snowflake", "Winter"),
@@ -533,7 +730,7 @@ function(input, output, session) {
       )
       
     } else if (input$var_mv == "ah_groups") {
-      updatePickerInput(session,"second_in_mv", "Number of Airhandlers",
+      updatePickerInput(session,"second_in_mv", "Number of Airhandlers:",
                         choices = air_hands,
                         choicesOpt = list(content = c(
                           pickerFormat01("#FFCFC5", "fa fa-solid fa-fish", "Less than 10"),
@@ -541,7 +738,7 @@ function(input, output, session) {
                           pickerFormat01("#FFCFC5", "fa fa-solid fa-dragon", "More than 25")))
       ) 
     } else if (input$var_mv == "day_of_week") {
-      updatePickerInput(session,"second_in_mv", "Day of Week",
+      updatePickerInput(session,"second_in_mv", "Day of Week:",
                         choices = dow_types,
                         choicesOpt = list(content = c(
                           pickerFormat01("#FFE2BA", "fa fa-regular fa-sun", "Sunday"),
@@ -553,7 +750,7 @@ function(input, output, session) {
                           pickerFormat01("#FFE2BA", "fa fa-regular fa-face-smile fa-spin", "Saturday")))
       )
     } else if (input$var_mv == "tod") {
-      updatePickerInput(session,"second_in_mv", "Time of Day",
+      updatePickerInput(session,"second_in_mv", "Time of Day:",
                         choices = tod_types,
                         choicesOpt = list(content = c(
                           pickerFormat01("#F9EEAB", "fa fa-solid fa-mug-saucer", "12am to 8am"),
@@ -561,12 +758,25 @@ function(input, output, session) {
                           pickerFormat01("#F9EEAB", "fa fa-solid fa-cloud-moon", "6pm to 12am")))
       )
       
+        
+    } else if (input$var_mv == "hod") {
+      updatePickerInput(session,"second_in_mv", "Hour of Day:",
+                        choices = hod_types,
+                        #multiple = TRUE, 
+                        choicesOpt = list(content = c(
+                          pickerFormat01("#E5EFAB", "fa fa-solid fa-mug-saucer", "12am"),
+                          pickerFormat01("#E5EFAB", "fa fa-solid fa-briefcase", "1am"),
+                          pickerFormat01("#E5EFAB", "fa fa-solid fa-cloud-moon", "2am")))
+      )
+      
+                            
     } else {
       updateSelectInput(session, "second_in_mv", "Select an option", choices = NULL)
     }
   })  
   
 #Subvariables (uni tab)
+
   observeEvent(input$var, {
     if (input$var == "site_type") {
       updatePickerInput(session, "second_in", "Choose site type(s):",
@@ -645,34 +855,56 @@ function(input, output, session) {
     if (input$plot_type_mv == "cfd") {
       paste("Cumulative", "Frequecy", "Distribution")
       
-    } else if (input$plot_type_mv == "2") {
-      "Option 2"
+    } else if (input$plot_type_mv == "norm") {
+      "Normalized Scale Hourly Time Series"
       
-    } else if (input$plot_type == "3") {
-      "Option 3"
+    } else if (input$plot_type_mv == "scat") {
+      "Scatter Plot"
       
     } else {
       ""
   }
     })
+# MV text  
+  plot_pols <- eventReactive(input$plot_type_mv, {
+    req(input$plot_type_mv)
+    
+    if (input$plot_type_mv == "cfd") {
+      "Select Indicators to Compare:" 
+      
+    } else if (input$plot_type_mv == "norm") {
+      "Select Indicators to Compare:"
+      
+    } else if (input$plot_type_mv == "scat") {
+      "Select TWO Indicators for the Scatter Plot:"
+      
+    } else {
+      ""
+    }
+  })
   
 #Selected data (mv tab)  
   selected_mv <- eventReactive(input$go_mv, {
-    req(input$plot_type_mv, input$var_mv, input$second_in_mv, input$pol)
+    req(input$var_mv, input$second_in_mv)
     
     w_mv$show()
     
-    if (input$plot_type_mv == "cfd") {
+    if (mv_pt() == "cfd") {
       dataset3 %>%
-        filter(pol %in% input$pol) %>%
+        filter(pol %in% mv_pol()) %>%
         filter(.data[[input$var_mv]] %in% input$second_in_mv)
       
-    } else if (input$plot_type_mv == "2") {
-      dataset3 %>%
+    } else if (mv_pt() == "norm") {
+      "%ni%" <- Negate("%in%")
+        dataset4 %>%
+        filter(pol %in% mv_pol()) %>%
+        #mutate(
+         # val = replace(val, .data[[input$var_mv]] %ni% input$second_in_mv, NA),
+          #how = replace(how, .data[[input$var_mv]] %ni% input$second_in_mv, NA))
         filter(.data[[input$var_mv]] %in% input$second_in_mv)
       
-    } else if (input$plot_type == "3") {
-      dataset3 %>%
+    } else if (mv_pt() == "scat") {
+      dataset5 %>%
         filter(.data[[input$var_mv]] %in% input$second_in_mv)
       
     } else {
