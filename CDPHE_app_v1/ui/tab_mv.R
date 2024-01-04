@@ -31,7 +31,7 @@ tabPanel(value = "mv_tab", id = "mv_tab", title = "mv",
                                        pickerFormat01("#F9EEAB", "fa fa-solid fa-clock", "Time of Day"),
                                        pickerFormat01("#E5EFAB", "fa fa-solid fa-clock", "Hour of Day"))),
                                    options = pickerOptions(container = "body", width = "fit", iconBase = "fas")),
-                       width = 5, offset = 0)),
+                       width = 4, offset = 0)),
                    
                    fluidRow(
                      
@@ -50,7 +50,7 @@ tabPanel(value = "mv_tab", id = "mv_tab", title = "mv",
                                    multiple =FALSE, options = pickerOptions(container = "body", iconBase = "fas",
                                                                            selectedTextFormat = "count >1",
                                                                            tickIcon = FALSE, width = "fit", inline = TRUE)), 
-                       width = 5, offset = 0)),
+                       width = 4, offset = 0)),
                      
                    fluidRow(align = "center",
         
@@ -76,8 +76,27 @@ tabPanel(value = "mv_tab", id = "mv_tab", title = "mv",
                      column(width = 8,
                        uiOutput("plot_title"))
                      ),
+                   fluidRow(
+                     id = "mv_site",
+                     align = "right",
+                     column(width = 10,
+                            conditionalPanel(
+                              condition = "output.plot_mv !== undefined && output.plot_mv !== null",
+                              searchInput(
+                                inputId = "siteID",
+                                label = "Filter for Site(s)",
+                                placeholder = "ex. 005a, 077",
+                                btnSearch = icon("wand-magic-sparkles"),
+                                btnReset = icon("circle-xmark")
+                              )
+                            )
+                     )
+                   ),
+                   
+                           
 
-                   plotlyOutput("plot_mv"))
+                   plotlyOutput("plot_mv")),
+         br()
          
 )
 

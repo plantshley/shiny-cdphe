@@ -1,51 +1,92 @@
 #Glossary stuff
 
 tabPanel(value = "glossary tab", title = "glossary tab", 
+         
 br(), 
-fluidRow(id = "gloss_row1", 
-wellPanel(id = "gloss_well", width = "100%", 
-      accordion(#title = "Group 1", 
-                id = "accordion1",
-        accordionItem(
-          title = "Term 1",
-          collapsed = TRUE,
-          "This is some text!"
-        ),
-        
-        accordionItem(
-          title = "Term 2",
-          collapsed = TRUE,
-          "This is some text!"
-        ), 
-        
-        accordionItem(
-          title = "Term 3",
-          collapsed = TRUE,
-          "This is some text!"
-        )),
-      
-      accordion(#title = "Group 2", 
-                id = "accordion2",
-          accordionItem(
-            title = "Term 1",
-            collapsed = TRUE,
-            "This is some text!"
-        ),
-                 
-          accordionItem(
-            title = "Term 2",
-            collapsed = TRUE,
-            "This is some text!"
-        ), 
-                 
-          accordionItem(
-            title = "Term 3",
-            collapsed = TRUE,
-            "This is some text!"
-        ))
+useShinyjs(),
 
-      )), 
-br(), 
-fluidRow(id = "gloss_row2",
-         actionBttn("refs", "References"))
-) 
+
+
+fluidRow(id = "gloss_row1",
+         
+wellPanel(id = "gloss_well", width = "100%", 
+          
+      searchInput(
+            inputId = "search", label = "Search for Term",
+            placeholder = "Type Here (ﾉ◕ヮ◕)ﾉ*:･ﾟ✧	                 ",
+            btnSearch = icon("rocket"),
+            btnReset = icon("circle-xmark"),
+            width = "450px"
+          ),
+      br(),
+          
+      accordion(id = "accordion1",
+  
+        accordionItem(
+          title = "IAQ Indictors",
+          collapsed = T,
+          
+          tags$img(src = "iaq_ids.png", id = "a1", 
+                   style = "width: 70%; margin-left: 30px"), 
+          br(),
+          "CO2", "PM2.5","TVOC", "Temp", "RH", "relative humidity"
+          
+        ),
+        
+        accordionItem(
+          title = "IAQ Indicator Units of Measure",
+          collapsed = T,
+          
+          tags$img(src = "iaq_un.png", id = "a2", 
+                   style = "width: 70%; margin-left: 30px"),
+          br(),
+          "ppb","ppm","microgram","µg/m", "ug/m", "celsius", "degrees"
+        ), 
+        
+        accordionItem(
+          title = "Plot Types (single-indicator tab)",
+          collapsed = T,
+          
+          tags$img(src = "plots_uni.png", id = "a3", 
+                   style = "width: 70%; margin-left: 30px"),
+          br(),
+          "hourly", "daily", "trend","line", "fluctuation", 
+      
+        ),
+        
+        accordionItem(
+          title = "Plot Types (multi-indicator tab)",
+          collapsed = T,
+          
+          tags$img(src = "plots_mv.png", id = "a4", 
+                   style = "width: 70%; margin-left: 30px"),
+          br(),
+          "CDF","scatter","cumulative distribution frequency", "normalized", "scale","time series", "normal", "norm"
+        ),
+        
+        accordionItem(
+          title = "Room Types",
+          collapsed = T,
+          
+          tags$img(src = "vars_room.png", id = "a5", 
+                   style = "width: 70%; margin-left: 30px"),
+          br(),
+          "kitchen","dining","storage","office","restroom","reception",
+          "lab","corridor","classroom","meeting","breakroom","bedroom",
+          "garage","gathering","basement","exam","entry","other"
+          
+        ),
+        
+        accordionItem(
+          title = "Site Types",
+          collapsed = T,
+          
+          tags$img(src = "vars_site.png", id = "a6", 
+                   style = "width: 70%; margin-left: 30px"),
+          br(),
+          "childcare","elderly care","residential","food services","shelters",
+          "offices","medical","adult care","religious", "other"
+          
+        ))
+      ))
+)

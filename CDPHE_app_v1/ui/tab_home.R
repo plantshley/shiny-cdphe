@@ -33,7 +33,7 @@ tabPanel(value = "home_tab", id = "home_tab", title = 'Home',
            tabsetPanel(id = "hb_tabs", type = "tabs", selected = "Home",
                        
                        tabPanel(title = "Home", align = "center",
-                                tags$img(src = "home.png", id = "img0", 
+                                tags$img(src = "home2.png", id = "img0", 
                                          style = "width: 100%;")), 
                        
                        tabPanel(title = "About the App", align = "center",

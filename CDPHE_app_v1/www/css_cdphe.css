@@ -11,7 +11,6 @@
       body {
         margin: 20px;
       }
-      
     .selected{
         background-color: white !important ;
         color: white !important; 
@@ -41,11 +40,30 @@
         width: 100% !important;
         display: flex;
         justify-content: flex-end;
-        background: linear-gradient(to left, #DD68A3, #DD7E68)!important;
+        background: linear-gradient(to left,#C268DD, #DD68A3, #DD7E68, #DD7E68)!important;
         -webkit-background-clip: text !important;
         -webkit-text-fill-color: transparent !important;
-      
     }
+    h5#mv_plot_pols, h5#mv_site {
+      font-size: 14px;
+    }
+    #top-well > div:nth-child(2) > div.col-sm-4 > div > div > button:hover,
+    #top-well > div:nth-child(1) > div.col-sm-4 > div > div > button:hover,
+    #top-well_mv > div:nth-child(2) > div.col-sm-4 > div > div > button:hover,
+    #top-well_mv > div:nth-child(1) > div.col-sm-4 > div > div > button:hover, 
+    #top-well > div:nth-child(2) > div.col-sm-4 > div > div > button:focus,
+    #top-well > div:nth-child(1) > div.col-sm-4 > div > div > button:focus,
+    #top-well_mv > div:nth-child(2) > div.col-sm-4 > div > div > button:focus,
+    #top-well_mv > div:nth-child(1) > div.col-sm-4 > div > div > button:focus{
+      background: linear-gradient(to right, #FFE0F6, #FFE3EA, #FFEDD5);
+      outline: none;
+      border-color: transparent;
+    }
+    .btn.active.focus, .btn.active:focus, .btn.focus, .btn:active.focus, .btn:active:focus, .btn:focus,
+    .bootstrap-select .dropdown-toggle:focus, .bootstrap-select>select.mobile-device:focus+.dropdown-toggle{
+      outline: white !important;
+    }
+
 /* Carousel */
       #hh_well{
         display: flex;
@@ -53,6 +71,7 @@
         align-items: center
         background-color: transparent !important;
         border: none;
+        margin-bottom: 0px;!important
         
       }
       .well {
@@ -103,23 +122,185 @@
       #hb_row {
         justify-content: left!important;
         padding-left: 30px;
-        padding-right; 30px; 
+        padding-right: 30px; 
+      }
+      #home.tab-content>.active{
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      .nav-tabs>li.active>a, .nav-tabs>li.active>a:focus, .nav-tabs>li.active>a:hover {
+        border: 1px solid #fec0ff;
+        color: #7B2C66;
+        cursor: default;
+        background-color: #fff;
+        border-bottom-color: transparent;
+      }
+      .nav-tabs {
+        border-bottom: 1px solid #fec0ff;
+        font-size: 15px;
+      }
+      .nav-tabs>li>a{
+        color: #FF95CE; 
+        margin-right: 2px;
+        line-height: 1.42857143;
+        border: 1px solid rgb(255 255 255 / 15%);
+        border-radius: 4px 4px 0 0;
+      }
+      .nav>li>a:focus, .nav>li>a:hover {
+        text-decoration: none;
+        background: linear-gradient(to right, #FFC9EF, #FFCEDA, #FFE2BA);
+        border-color: transparent;
+        color: #fff;
+      }
+/* Glossary + siteID search */
+      #gloss_well {
+        margin-left: 75px;
+      }
+      .box-body {
+        color: transparent;
+        size: 0pt;
+      }
+      .box-title {
+        margin-top: 5 px;
+        margin-bottom: 2px;
+      }
+      .box-title a {
+        color: #BEB7FF;
+
+      }
+      .box-title a:hover, .box-title a:focus {
+        background: linear-gradient(to right, #C268DD, #DD7E68)!important;
+        -webkit-background-clip: text !important;
+        -webkit-text-fill-color: transparent !important;
+        text-decoration: underline !important;
+        font-weight: bold;
+        
+      }
+
+      #search-label.control-label{ 
+        color: #7B2C66;
+        font-size: 10pt;
+        font-weight: normal;
+      
+      }
+      #siteID-label.control-label,
+      #siteIDu-label.control-label{
+        color: #7B2C66;
+        font-size: 10pt;
+        font-weight: normal;
+        margin-bottom:2pt;
+        margin-right: 8pt;
+      }  
+      #siteID.input-group,
+      #siteIDu.input-group{
+        display: flex;
+        border-collapse: separate;
+        flex-wrap: nowrap;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-end;
+        height: 20px;
+      }
+      #search_reset.btn, #search_search.btn,
+      #siteID_reset.btn, #siteID_search.btn,
+      #siteIDu_reset.btn, #siteIDu_search.btn{
+        border-color: transparent!important;
+        border-radius: 25px!important;
+        padding: 7px;
+        padding-bottom:5px!important;
+        color: #7B2C66;
+      }
+      #siteID_reset.btn, #siteID_search.btn,
+      #siteIDu_reset.btn, #siteIDu_search.btn{
+        color: #7B2C66!important;
+        margin: 5px!important;
+        padding: 5px!important;
+        padding-bottom: 3px!important;
+      }
+      #siteID_reset.btn,
+      #siteIDu_reset.btn{
+        display: none!important;
+        width: 0;
+      }
+      #search_reset.btn:hover, #search_search.btn:hover,
+      #search_reset.btn:focus, #search_search.btn:focus,
+      #siteID_reset.btn:hover, #siteID_search.btn:hover,
+      #siteID_reset.btn:focus, #siteID_search.btn:focus,
+      #siteIDu_reset.btn:hover, #siteIDu_search.btn:hover,
+      #siteIDu_reset.btn:focus, #siteIDu_search.btn:focus{
+        background: linear-gradient(to right, #FFC9EF, #FFCEDA, #FFE2BA);
+        border-color: transparent;
+        color: #7B2C66;
+      }
+      #search_text.form-control:focus,
+      #search_text.form-control:hover,
+      #siteID_text.form-control:focus,
+      #siteID_text.form-control:hover,
+      #siteIDu_text.form-control:focus,
+      #siteIDu_text.form-control:hover{
+        border-color: #fec0ff;
+        border-radius: 50px!important;
+        border-right-color: transparent;
+        border-left-color: transparent;
+        
+      }
+      #search_text.form-control,
+      { 
+        border-radius: 50px!important;
+        border-right-color: transparent;
+        border-left-color: transparent;
+        margin-right: 10px;
+        width: 400px;
+      }
+      #siteID_text.form-control,
+      #siteIDu_text.form-control{
+        width: 100px!important;
+        height: 20px;
+        font-size: 13px;
+        color: #9D919E;
+        font-weight: normal;
+      }
+      .col-sm-10  {
+        margin-right: 18px;
+      }
+      .input-group .form-control, .input-group-addon, .input-group-btn {
+        display: block;
       }
 /* Plotly */
-      #plot-well, #plot-well_mv {
-        height: 825px;
+      #plot-well {
+        height: 880px;
         background-color: transparent;
         border-color: transparent; 
         box-shadow: none;
       }
-      .js-plotly-plot .plotly, .js-plotly-plot .plotly {
-        height: fit-content;
+      #plot-well_mv {
+        height: 1100px;
+        background-color: transparent;
+        border-color: transparent; 
+        box-shadow: none;
       }
+      .js-plotly-plot .plotly svg {
+        overflow: visible;
+      }
+      
       #modebar-f495ae .modebar-group {
         border-radius: 20%;
         background-color: transparent;
       }
  /* Waiter */     
+    body > div.waiter-overlay{
+      align-self: center;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      width: 100px;
+      height: 100px;
+      margin: auto;
+    }
     .waiter-overlay-content .orbit{
       border-color: #BEB7FF !important;
       } 
@@ -337,6 +518,13 @@
         }
       #top-well_mv {
         margin-bottom: 0px;
+        padding-left: 150px;
+        padding-right: 150px;
+      }
+      #top-well {
+        padding-left: 150px;
+        padding-right: 150px;
+        margin-bottom: 0px!important;
       }
       #bottom-well, #bottom-well_mv {
         display: flex;
@@ -353,5 +541,20 @@
       #gloss_row1, #mv_plot_row {
         display: flex;
         justify-content: left;
+      }
+      #mv_plot_pols.row {
+        justify-content: left !important;
+        padding-left: 15px;
+        margin-top: 0px;
+      }
+      #mv_site.row {
+        justify-content: right!important;
+      }
+      #top-well_mv > div:nth-child(1) > div:nth-child(2), 
+      #top-well_mv > div:nth-child(2) > div:nth-child(2),
+      #top-well > div:nth-child(1) > div:nth-child(2), 
+      #top-well > div:nth-child(2) > div:nth-child(2){
+        display: flex;
+        justify-content: flex-end;
       }
   

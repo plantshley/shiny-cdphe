@@ -17,7 +17,7 @@ tabPanel(value = "uni_tab", id = "uni_tab", title = "uni",
                          inline = TRUE), 
                        width = 5), 
                      
-                     column(
+                     column( 
                        pickerInput("var", label = "Choose variable:", 
                                    choices = vars, selected = "site_type",
                                    choicesOpt = list(
@@ -54,6 +54,22 @@ tabPanel(value = "uni_tab", id = "uni_tab", title = "uni",
          ),
          
          wellPanel(id = "plot-well",
+                   fluidRow(
+                     id = "mv_site",
+                     align = "right",
+                     column(width = 10,
+                            conditionalPanel(
+                              condition = "output.plot !== undefined && output.plot !== null",
+                              searchInput(
+                                inputId = "siteIDu",
+                                label = "Filter for Site(s)",
+                                placeholder = "ex. 005a, 077",
+                                btnSearch = icon("wand-magic-sparkles"),
+                                btnReset = icon("circle-xmark")
+                              )
+                            )
+                     )
+                   ),
           plotlyOutput("plot")
          ),
          fluidRow(
@@ -61,7 +77,8 @@ tabPanel(value = "uni_tab", id = "uni_tab", title = "uni",
                    sliderInput("hour", "Choose hour range within the week:", min = 0, 
                                max = 167, 
                                animate = F, 
-                               value = c(0,167), step = 8, width = "88%")))
+                               value = c(0,167), step = 8, width = "90%"))),
+         br()
 )
 
 
