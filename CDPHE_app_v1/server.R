@@ -1,8 +1,53 @@
-source(paste0(rstudioapi::getActiveProject(),"/ui/app_funs.R"))
+source(paste0(rstudioapi::getActiveProject(),"/CDPHE_app_v1/ui/app_funs.R"))
 source("ui.R")
 
 function(input, output, session) {
+#Update selected_mv & selected for siteID
+  observe({
+    if (input$siteID != "" ){
+      site_ids <- strsplit(input$siteID, ',')[[1]]
+      
+      mv2 <- origen()
+      mv2 <- mv2 %>%
+        filter(site_id %in% site_ids)
+        selected_mv(mv2)
+
+    } else {
+      mv2 <- origen()
+      selected_mv(mv2)
+
+    } 
+  })
+  observe({
+    if (input$siteIDu != "" ){
+      site_ids <- strsplit(input$siteIDu, ',')[[1]]
+      
+      uni2 <- origen0()
+      uni2 <- uni2 %>%
+        filter(site_id %in% site_ids)
+      selected(uni2)
+      
+    } else {
+      uni2 <- origen0()
+      selected(uni2)
+      
+    } 
+  })
 #Glossary Search
+  observeEvent(input$search, {
+    shinyjs::runjs(
+      sprintf(
+        "$items = $('#accordion1 .panel.box.box-solid');
+         $items.detach().sort(function(a, b) {
+           var aText = $(a).text().toLowerCase();
+           var bText = $(b).text().toLowerCase();
+           return (aText.includes('%s') ? -1 : aText.localeCompare(bText));
+         });
+         $('#accordion1').empty().append($items);",
+        tolower(input$search)
+      ) 
+    ) 
+  })
   
 #Tab buttons
   #HOME TAB
@@ -13,7 +58,7 @@ function(input, output, session) {
     updateTabsetPanel(session, "tabs", selected = "home_tab")
   })
   
-  observeEvent(input$hb_tabs, {
+  observe({
     
   if (input$hb_tabs == "About the App") {
     output$scroll <- renderUI({
@@ -24,15 +69,16 @@ function(input, output, session) {
     output$scroll <- renderUI({
       scroll_reveal(target = c("#img3", "#img4", "#img5"), duration = 2000, distance = "300px") 
     })
-  } else
+  } else {
     output$scroll <- renderUI({
       scroll_reveal(target = c("#img1", "#img2"), duration = 2000, distance = "300px")
     })
+  } 
   })
 ###### MV TAB######
   observeEvent(input$mv, {
     output$title <- renderUI({
-      h1(id = "mv_title", "Multivariable Data")
+      h1(id = "mv_title", "Multi-Indicator Comparison")
     })
     output$plot_title <- renderUI({
       h4(id = "plot_title", plot_title())
@@ -81,9 +127,9 @@ function(input, output, session) {
                       axis.text.x = element_text(family = "Bahnschrift", angle = 0, hjust = 0, size = 8, 
                                                  margin = margin(b = 1, unit = "mm")), 
                       axis.text.y = element_text(family = "Bahnschrift", size = 8, hjust = 0),
-                      axis.title.y = element_text(family = "Bahnschrift", size = 10, 
+                      axis.title.y = element_text(family = "Bahnschrift", size = 12, 
                                                   margin = margin(r = 5, l = 5, t = 5, b = 5,  unit = "mm")),
-                      axis.title.x = element_text(family = "Bahnschrift", size = 10, margin = margin(t = 5, b = 5, unit = "mm")),
+                      axis.title.x = element_text(family = "Bahnschrift", size = 12, margin = margin(t = 5, b = 5, unit = "mm")),
                       strip.text = element_text(face = "bold", angle = 0, size = 10, color = "black", family = "Bahnschrift",
                                                 margin = margin(t = 1.5, unit = "mm")),
                       strip.background = element_rect(fill = "#EDDFF9", size = 1),
@@ -154,10 +200,9 @@ function(input, output, session) {
                        axis.text.x = element_text(family = "Bahnschrift", angle = 0, hjust = 0, size = 8, 
                                                   margin = margin(b = 1, unit = "mm")), 
                        axis.text.y = element_text(family = "Bahnschrift", size = 8, hjust = 0),
-                       axis.title.y = element_text(family = "Bahnschrift", size = 10, 
-                                                   margin = margin(r = 5, l = 5, unit = "mm")),
-                       axis.title.x = element_text(family = "Bahnschrift", size = 10, 
-                                                   margin = margin(t = 5, r = 0, b = 5, l = 0, unit = "mm")),
+                       axis.title.y = element_text(family = "Bahnschrift", size = 12, 
+                                                   margin = margin(r = 5, l = 5, t = 5, b = 5,  unit = "mm")),
+                       axis.title.x = element_text(family = "Bahnschrift", size = 12, margin = margin(t = 5, b = 5, unit = "mm")),
                        strip.text = element_text(face = "bold", angle = 0, size = 10, color = "black", family = "Bahnschrift",
                                                  margin = margin(t = 1.5, unit = "mm")),
                        strip.background = element_rect(fill = "#EDDFF9", size = 1),
@@ -228,11 +273,10 @@ function(input, output, session) {
                        theme(
                          axis.text.x = element_text(family = "Bahnschrift", angle = 0, hjust = 0, size = 10, 
                                                     margin = margin(b = 1, unit = "mm")), 
-                         axis.text.y = element_text(family = "Bahnschrift", size = 10, hjust = 0),
-                         axis.title.y = element_text(family = "Bahnschrift", size = 10, 
-                                                     margin = margin(r = 5, l = 5, unit = "mm")),
-                         axis.title.x = element_text(family = "Bahnschrift", size = 10, 
-                                                     margin = margin(t = 5, b = 5, unit = "mm")),
+                         axis.text.y = element_text(family = "Bahnschrift", size = 12, hjust = 0),
+                         axis.title.y = element_text(family = "Bahnschrift", size = 12, 
+                                                     margin = margin(r = 5, l = 5, t = 5, b = 5,  unit = "mm")),
+                         axis.title.x = element_text(family = "Bahnschrift", size = 12, margin = margin(t = 5, b = 5, unit = "mm")),
                          strip.text = element_text(face = "bold", angle = 0, size = 10, color = "black", family = "Bahnschrift",
                                                    margin = margin(t = 1.5, unit = "mm")),
                          strip.background = element_rect(fill = "#EDDFF9", size = 1),
@@ -309,7 +353,7 @@ function(input, output, session) {
                            minor_breaks = seq(min(t()[1]), max(t()[2]), by = 6), expand = c(0,0)) +
         
         theme( 
-          axis.text.x = element_text(family = "Bahnschrift", angle = 45, hjust = 1, size = 10), 
+          axis.text.x = element_text(family = "Bahnschrift", angle = 0, hjust = 1, size = 10), 
           axis.text.y = element_text(family = "Bahnschrift", size = 10, hjust = 1),
           axis.title.y = element_text(family = "Bahnschrift", size = 12, margin = margin(r = 5, l = 1)),
           axis.title.x = element_text(family = "Bahnschrift", size = 12, margin = margin(t = 5, b = 1, unit = "mm")),
@@ -354,7 +398,7 @@ function(input, output, session) {
     output$plot <- renderPlotly({ res = 96
     
     req(input$go, input$pm25)
-    p2 <- ggplotly(height = 600,
+    p2 <- ggplotly(height = 800,
       ggplot() +
         geom_line(data = selected(), aes(x = how, y = pm25, color = paste(site_id, id_room),
                                          text2 = map(paste(
@@ -378,13 +422,13 @@ function(input, output, session) {
             shape = NULL, 
             size = 1, 
             stroke = 1))) +
-        facet_wrap(~.data[[var_uni()]], ncol = 1, scales = "free_y") +
+        facet_wrap(~.data[[var_uni()]], nrow = 4, scales = "free_y") +
         ylab("PM2.5 Concentration (μg/m3)\n") + xlab("\n Hour of Week (Sun ~ Sat)") +
         scale_x_continuous(limits = t(), breaks = seq(min(t()[1]), max(t()[2]), by = 24),
                            minor_breaks = seq(min(t()[1]), max(t()[2]), by = 6), expand = c(0,0)) +
         
         theme( 
-          axis.text.x = element_text(family = "Bahnschrift", angle = 45, hjust = 1, size = 10), 
+          axis.text.x = element_text(family = "Bahnschrift", angle = 0, hjust = 1, size = 10), 
           axis.text.y = element_text(family = "Bahnschrift", size = 10, hjust = 1),
           axis.title.y = element_text(family = "Bahnschrift", size = 12, margin = margin(r = 5, l = 1)),
           axis.title.x = element_text(family = "Bahnschrift", size = 12, margin = margin(t = 5, b = 1, unit = "mm")),
@@ -428,7 +472,7 @@ function(input, output, session) {
     output$plot <- renderPlotly({ res = 96
     
     req(input$go, input$voc)
-    p3 <- ggplotly(height = 600,
+    p3 <- ggplotly(height = 800,
       ggplot() +
         geom_line(data = selected(), aes(x = how, y = voc, color = paste(site_id, id_room),
                                          text2 = map(paste(
@@ -452,13 +496,13 @@ function(input, output, session) {
             shape = NULL, 
             size = 1, 
             stroke = 1))) +
-        facet_wrap(~.data[[var_uni()]], ncol = 1, scales = "free_y") +
+        facet_wrap(~.data[[var_uni()]], nrow = 4, scales = "free_y") +
         ylab("TVOC Concentration (ppb)\n") + xlab("\n Hour of Week (Sun ~ Sat)") +
         scale_x_continuous(limits = t(), breaks = seq(min(t()[1]), max(t()[2]), by = 24),
                            minor_breaks = seq(min(t()[1]), max(t()[2]), by = 6), expand = c(0,0)) +
         
         theme( 
-          axis.text.x = element_text(family = "Bahnschrift", angle = 45, hjust = 1, size = 10), 
+          axis.text.x = element_text(family = "Bahnschrift", angle = 0, hjust = 1, size = 10), 
           axis.text.y = element_text(family = "Bahnschrift", size = 10, hjust = 1),
           axis.title.y = element_text(family = "Bahnschrift", size = 12, margin = margin(r = 5, l = 1)),
           axis.title.x = element_text(family = "Bahnschrift", size = 12, margin = margin(t = 5, b = 1, unit = "mm")),
@@ -502,7 +546,7 @@ function(input, output, session) {
     output$plot <- renderPlotly({ res = 96
     
     req(input$go, input$temp)
-    p4 <- ggplotly(height = 600, 
+    p4 <- ggplotly(height = 800, 
       ggplot() +
         geom_line(data = selected(), aes(x = how, y = temp, color = paste(site_id, id_room),
                                          text2 = map(paste(
@@ -526,13 +570,13 @@ function(input, output, session) {
             shape = NULL, 
             size = 1, 
             stroke = 1))) +
-        facet_wrap(~.data[[var_uni()]], ncol = 1, scales = "free_y") +
+        facet_wrap(~.data[[var_uni()]], nrow = 4, scales = "free_y") +
         ylab("Temperature (°C)\n") + xlab("\n Hour of Week (Sun ~ Sat)") +
         scale_x_continuous(limits = t(), breaks = seq(min(t()[1]), max(t()[2]), by = 24),
                            minor_breaks = seq(min(t()[1]), max(t()[2]), by = 6), expand = c(0,0)) +
         
         theme( 
-          axis.text.x = element_text(family = "Bahnschrift", angle = 45, hjust = 1, size = 10), 
+          axis.text.x = element_text(family = "Bahnschrift", angle = 0, hjust = 1, size = 10), 
           axis.text.y = element_text(family = "Bahnschrift", size = 10, hjust = 1),
           axis.title.y = element_text(family = "Bahnschrift", size = 12, margin = margin(r = 5, l = 1)),
           axis.title.x = element_text(family = "Bahnschrift", size = 12, margin = margin(t = 5, b = 1, unit = "mm")),
@@ -576,7 +620,7 @@ function(input, output, session) {
     output$plot <- renderPlotly({ res = 96
     
     req(input$go, input$rh)
-    p5 <- ggplotly(height = 600, 
+    p5 <- ggplotly(height = 800, 
       ggplot() +
         geom_line(data = selected(), aes(x = how, y = RH, color = paste(site_id, id_room),
                                          text2 = map(paste(
@@ -600,13 +644,13 @@ function(input, output, session) {
             shape = NULL, 
             size = 1, 
             stroke = 1))) +
-        facet_wrap(~.data[[var_uni()]], ncol = 1, scales = "free_y") +
+        facet_wrap(~.data[[var_uni()]], nrow = 4, scales = "free_y") +
         ylab("Relative Humidity (%)\n\n") + xlab("\n Hour of Week (Sun ~ Sat)") +
         scale_x_continuous(limits = t(), breaks = seq(min(t()[1]), max(t()[2]), by = 24),
                            minor_breaks = seq(min(t()[1]), max(t()[2]), by = 6), expand = c(0,0)) +
         
         theme( 
-          axis.text.x = element_text(family = "Bahnschrift", angle = 45, hjust = 1, size = 10), 
+          axis.text.x = element_text(family = "Bahnschrift", angle = 0, hjust = 1, size = 10), 
           axis.text.y = element_text(family = "Bahnschrift", size = 10, hjust = 1),
           axis.title.y = element_text(family = "Bahnschrift", size = 12, margin = margin(r = 5, l = 1)),
           axis.title.x = element_text(family = "Bahnschrift", size = 12, margin = margin(t = 5, b = 1, unit = "mm")),
@@ -645,9 +689,12 @@ function(input, output, session) {
   
 ######Glossary Tab######
   observeEvent(input$glossary, {
+    shinyjs::enable(id = "accordion1")
+    
     output$title <- renderUI({
       h1(id = "gloss_title", "Glossary")
     })  
+    
     updateTabsetPanel(session, "tabs", selected = "glossary tab")
   })
   
@@ -741,7 +788,7 @@ function(input, output, session) {
       updatePickerInput(session,"second_in_mv", "Day of Week:",
                         choices = dow_types,
                         choicesOpt = list(content = c(
-                          pickerFormat01("#FFE2BA", "fa fa-regular fa-sun", "Sunday"),
+                          pickerFormat01("#FFE2BA", "fa fa-regular fa-sun fa-spin", "Sunday"),
                           pickerFormat01("#FFE2BA", "fa fa-solid fa-m", "Monday"),
                           pickerFormat01("#FFE2BA", "fa fa-solid fa-t", "Tuesday"),
                           pickerFormat01("#FFE2BA", "fa fa-solid fa-w", "Wednesday"),
@@ -856,7 +903,7 @@ function(input, output, session) {
       paste("Cumulative", "Frequecy", "Distribution")
       
     } else if (input$plot_type_mv == "norm") {
-      "Normalized Scale Hourly Time Series"
+      "Normalized  Scale  Hourly  Time  Series"
       
     } else if (input$plot_type_mv == "scat") {
       "Scatter Plot"
@@ -884,11 +931,14 @@ function(input, output, session) {
   })
   
 #Selected data (mv tab)  
-  selected_mv <- eventReactive(input$go_mv, {
+  selected_mv <- reactiveVal(NULL)
+  origen <- reactiveVal(NULL)
+  
+  observeEvent(input$go_mv, {
     req(input$var_mv, input$second_in_mv)
     
     w_mv$show()
-    
+    mv1 <- 
     if (mv_pt() == "cfd") {
       dataset3 %>%
         filter(pol %in% mv_pol()) %>%
@@ -911,14 +961,19 @@ function(input, output, session) {
       dataset3 %>%
         filter(.data[[input$var_mv]] %in% input$second_in_mv)
     }
+    origen(mv1)
+    selected_mv(mv1)
   })
   
 #Selected data (uni tab)
-  selected <- eventReactive(input$go, {
-    req(input$plot_type, input$var, input$second_in)
+  selected <- reactiveVal(NULL)
+  origen0 <- reactiveVal(NULL)
+  
+  observeEvent(input$go, {
+    req(input$var, input$second_in)
     
     w$show()
-    
+    uni1 <- 
     if (input$plot_type == "1hr") {
       dataset2 %>%
         filter(.data[[input$var]] %in% input$second_in)
@@ -941,6 +996,8 @@ function(input, output, session) {
       dataset2 %>%
         filter(.data[[input$var]] %in% input$second_in)
     }
+    origen0(uni1)
+    selected(uni1)
   })
 
   observeEvent(event_data("plotly_legendclick"), {
