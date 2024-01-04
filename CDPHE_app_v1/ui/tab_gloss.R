@@ -87,6 +87,18 @@ wellPanel(id = "gloss_well", width = "100%",
           "childcare","elderly care","residential","food services","shelters",
           "offices","medical","adult care","religious", "other"
           
+        ),
+        
+        accordionItem(
+          title = "Other Variables",
+          collapsed = T,
+          
+          tags$img(src = "vars_site.png", id = "a6", 
+                   style = "width: 70%; margin-left: 30px"),
+          br(),
+          "leaky","moderate","tight","leakiness","shelters",
+          "air handlers", "hour of day", "time of day", "day of week", "season"
+          
         ))
       ))
 )

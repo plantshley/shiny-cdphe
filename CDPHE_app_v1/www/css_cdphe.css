@@ -88,7 +88,7 @@
       }
       .carousel-indicators.active li {
         border: white;
-        background-color: pink;
+        background-color: #FFC9EF;
       }
       .carousel-control.right, .carousel-control.left,
       .carousel-control.right:focus, .carousel-control.left:focus{

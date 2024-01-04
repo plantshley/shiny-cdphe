@@ -100,12 +100,14 @@ function(input, output, session) {
                                                      selected_mv()$site_id, " ", selected_mv()$room), HTML), 
                                                    text = map(paste(  
                                                      "<b> Site ID:", paste(selected_mv()$site_id, selected_mv()$id_room),"<br>",
-                                                     "<b>Value:</b>", round(selected_mv()$val, digits = 0),"<br>",
+                                                     "<b>Value:</b>", round(selected_mv()$val, digits = 1),"<br>",
                                                      "<b>Percentage:</b>", paste0(round(selected_mv()$ecdf*100, digits =1), "%"), "<br>",
                                                      "<b>Site Type:</b>", selected_mv()$site_type,"<br>",
                                                      "<b>Room Type:</b>", selected_mv()$room_type,"<br>",
                                                      "<b>Season:</b>", selected_mv()$season), HTML)), lwd = 0.25, ylim = c(0,1)) +
                     geom_step(lwd = 0.25) +
+                    scale_x_continuous(breaks = scales::pretty_breaks(n = 10)) +
+                    scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) +
                     ylab("Percent of selected subvariable data\n") +
                     xlab("\nSelected Indicator Value (ppm, μg/m3, ppb, °C, etc)\n") +
                     scale_color_manual(guide = "legend", 
@@ -124,9 +126,9 @@ function(input, output, session) {
                                                         RH = "Relative Humidity (%)"))) +
                     theme(
                       text = element_text(family = "Bahnschrift", margin = margin(b = 5, unit = "mm")), 
-                      axis.text.x = element_text(family = "Bahnschrift", angle = 0, hjust = 0, size = 8, 
+                      axis.text.x = element_text(family = "Bahnschrift", angle = 0, hjust = 0, size = 10, 
                                                  margin = margin(b = 1, unit = "mm")), 
-                      axis.text.y = element_text(family = "Bahnschrift", size = 8, hjust = 0),
+                      axis.text.y = element_text(family = "Bahnschrift", size = 10, hjust = 0),
                       axis.title.y = element_text(family = "Bahnschrift", size = 12, 
                                                   margin = margin(r = 5, l = 5, t = 5, b = 5,  unit = "mm")),
                       axis.title.x = element_text(family = "Bahnschrift", size = 12, margin = margin(t = 5, b = 5, unit = "mm")),
@@ -180,6 +182,7 @@ function(input, output, session) {
                                                       "<b>Datetime:</b>", selected_mv()$date), HTML)), 
                                lwd = 0.2, ylim = c(0,1)) +
                      scale_x_continuous(breaks = seq(0, max(selected_mv()$how), by = 24)) +
+                     scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) +
                      ylab(" ") + 
                      labs(x = "\nHour (0 = 12am the first Sunday of data)\n") +
                      scale_color_manual(guide = "legend", 
@@ -197,9 +200,9 @@ function(input, output, session) {
                                                          temp = "Tempurature",
                                                          RH = "Relative Humidity"))) +
                      theme(
-                       axis.text.x = element_text(family = "Bahnschrift", angle = 0, hjust = 0, size = 8, 
+                       axis.text.x = element_text(family = "Bahnschrift", angle = 0, hjust = 0, size = 10, 
                                                   margin = margin(b = 1, unit = "mm")), 
-                       axis.text.y = element_text(family = "Bahnschrift", size = 8, hjust = 0),
+                       axis.text.y = element_text(family = "Bahnschrift", size = 10, hjust = 0),
                        axis.title.y = element_text(family = "Bahnschrift", size = 12, 
                                                    margin = margin(r = 5, l = 5, t = 5, b = 5,  unit = "mm")),
                        axis.title.x = element_text(family = "Bahnschrift", size = 12, margin = margin(t = 5, b = 5, unit = "mm")),
@@ -254,6 +257,8 @@ function(input, output, session) {
                                                              "<b>Datetime:</b>", selected_mv()$date), HTML)), 
                                   lwd = 0.25, size = 0.5) +
                        geom_abline(slope=1, intercept = 0, lty = "11", color = "lightgrey", alpha = 0.75) +
+                       scale_x_continuous(breaks = scales::pretty_breaks(n = 10)) +
+                       scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) +
                        ylab(paste(toupper(mv_pol()[2]), "\n")) + 
                        xlab(paste("\n",toupper(mv_pol()[1]))) +
                        scale_color_manual(guide = "legend", 
@@ -273,7 +278,7 @@ function(input, output, session) {
                        theme(
                          axis.text.x = element_text(family = "Bahnschrift", angle = 0, hjust = 0, size = 10, 
                                                     margin = margin(b = 1, unit = "mm")), 
-                         axis.text.y = element_text(family = "Bahnschrift", size = 12, hjust = 0),
+                         axis.text.y = element_text(family = "Bahnschrift", size = 10, hjust = 0),
                          axis.title.y = element_text(family = "Bahnschrift", size = 12, 
                                                      margin = margin(r = 5, l = 5, t = 5, b = 5,  unit = "mm")),
                          axis.title.x = element_text(family = "Bahnschrift", size = 12, margin = margin(t = 5, b = 5, unit = "mm")),
@@ -339,6 +344,7 @@ function(input, output, session) {
                                            "<b>Datetime:</b>", selected()$date), HTML)), 
                   xlim = t(), lwd = 0.25, show.legend = TRUE, legendgroup = "legend-text") + 
         xlim(t()) +
+        scale_y_continuous(breaks = scales::pretty_breaks(n = 5)) +
         scale_color_manual(guide = "legend", 
                            labels = "text2",
                            values = colorsch()) + 
@@ -414,6 +420,7 @@ function(input, output, session) {
                                            "<b>Datetime:</b>", selected()$date), HTML)), 
                   xlim = t(), lwd = 0.25, show.legend = TRUE, legendgroup = "legend-text") + 
         xlim(t()) +
+        scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) +
         scale_color_manual(guide = "legend", 
                            labels = "text2",
                            values = colorsch()) + 
@@ -488,6 +495,7 @@ function(input, output, session) {
                                            "<b>Datetime:</b>", selected()$date), HTML)), 
                   xlim = t(), lwd = 0.25, show.legend = TRUE, legendgroup = "legend-text") + 
         xlim(t()) +
+        scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) +
         scale_color_manual(guide = "legend", 
                            labels = "text2",
                            values = colorsch()) + 
@@ -562,6 +570,7 @@ function(input, output, session) {
                                            "<b>Datetime:</b>", selected()$date), HTML)), 
                   xlim = t(), lwd = 0.25, show.legend = TRUE, legendgroup = "legend-text") + 
         xlim(t()) +
+        scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) +
         scale_color_manual(guide = "legend", 
                            labels = "text2",
                            values = colorsch()) + 
@@ -636,6 +645,7 @@ function(input, output, session) {
                                            "<b>Datetime:</b>", selected()$date), HTML)), 
                   xlim = t(), lwd = 0.25, show.legend = TRUE, legendgroup = "legend-text") + 
         xlim(t()) +
+        scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) +
         scale_color_manual(guide = "legend", 
                            labels = "text2",
                            values = colorsch()) + 
@@ -761,9 +771,9 @@ function(input, output, session) {
       updatePickerInput(session,"second_in_mv", "Building Leakiness:",
                         choices = leaky,
                         choicesOpt = list(content = c(
-                          pickerFormat01("#FFCEDA", "fa fa-stroopwafel fa-xs", "Leaky"),
-                          pickerFormat01("#FFCEDA", "fa fa-stroopwafel fa-sm", "Moderate"),
-                          pickerFormat01("#FFCEDA", "fa fa-stroopwafel", "Tight")))
+                          pickerFormat01("#FFCEDA", "fa fa-carrot", "Leaky"),
+                          pickerFormat01("#FFCEDA", "fa fa-candy-cane", "Moderate"),
+                          pickerFormat01("#FFCEDA", "fa fa-pepper-hot", "Tight")))
       ) 
       
     } else if (input$var_mv == "season") {
@@ -811,9 +821,30 @@ function(input, output, session) {
                         choices = hod_types,
                         #multiple = TRUE, 
                         choicesOpt = list(content = c(
-                          pickerFormat01("#E5EFAB", "fa fa-solid fa-mug-saucer", "12am"),
-                          pickerFormat01("#E5EFAB", "fa fa-solid fa-briefcase", "1am"),
-                          pickerFormat01("#E5EFAB", "fa fa-solid fa-cloud-moon", "2am")))
+                          pickerFormat01("#E5EFAB", "fa fa-solid fa-water", "12am"),
+                          pickerFormat01("#E5EFAB", "fa fa-solid fa-worm", "1am"),
+                          pickerFormat01("#E5EFAB", "fa fa-solid fa-sun", "2am"),
+                          pickerFormat01("#E5EFAB", "fa fa-solid fa-cloud-rain", "3am"),
+                          pickerFormat01("#E5EFAB", "fa fa-solid fa-rainbow fa-sm", "4am"),
+                          pickerFormat01("#E5EFAB", "fa fa-solid fa-mound", "5am"),
+                          pickerFormat01("#E5EFAB", "fa fa-solid fa-seedling fa-xs", "6am"),
+                          pickerFormat01("#E5EFAB", "fa fa-solid fa-seedling fa-sm", "7am"),
+                          pickerFormat01("#E5EFAB", "fa fa-solid fa-seedling", "8am"),
+                          pickerFormat01("#E5EFAB", "fa fa-solid fa-seedling", "9am"),
+                          pickerFormat01("#E5EFAB", "fa fa-solid fa-seedling", "10am"),
+                          pickerFormat01("#E5EFAB", "fa fa-solid fa-seedling", "11am"),
+                          pickerFormat01("#E5EFAB", "fa fa-solid fa-seedling", "12pm"),
+                          pickerFormat01("#E5EFAB", "fa fa-solid fa-tree fa-xs", "1pm"),
+                          pickerFormat01("#E5EFAB", "fa fa-solid fa-tree fa-sm", "2pm"),
+                          pickerFormat01("#E5EFAB", "fa fa-solid fa-tree", "3pm"),
+                          pickerFormat01("#E5EFAB", "fa fa-solid fa-tree", "4pm"),
+                          pickerFormat01("#E5EFAB", "fa fa-solid fa-tree", "5pm"),
+                          pickerFormat01("#E5EFAB", "fa fa-solid fa-tree", "6pm"),
+                          pickerFormat01("#E5EFAB", "fa fa-solid fa-tree", "7pm"),
+                          pickerFormat01("#E5EFAB", "fa fa-solid fa-bugs", "8pm"),
+                          pickerFormat01("#E5EFAB", "fa fa-solid fa-wind", "9pm"),
+                          pickerFormat01("#E5EFAB", "fa fa-solid fa-plant-wilt", "10pm"),
+                          pickerFormat01("#E5EFAB", "fa fa-solid fa-worm", "11pm")))
       )
       
                             
@@ -862,9 +893,9 @@ function(input, output, session) {
       updatePickerInput(session,"second_in", "Building Leakiness",
                         choices = leaky,
                         choicesOpt = list(content = c(
-                        pickerFormat01("#FFCEDA", "fa fa-stroopwafel fa-xs", "Leaky"),
-                        pickerFormat01("#FFCEDA", "fa fa-stroopwafel fa-sm", "Moderate"),
-                        pickerFormat01("#FFCEDA", "fa fa-stroopwafel", "Tight")))
+                          pickerFormat01("#FFCEDA", "fa fa-carrot", "Leaky"),
+                          pickerFormat01("#FFCEDA", "fa fa-candy-cane", "Moderate"),
+                          pickerFormat01("#FFCEDA", "fa fa-pepper-hot", "Tight")))
       ) 
       
     } else if (input$var == "season") {
@@ -940,9 +971,18 @@ function(input, output, session) {
     w_mv$show()
     mv1 <- 
     if (mv_pt() == "cfd") {
-      dataset3 %>%
-        filter(pol %in% mv_pol()) %>%
-        filter(.data[[input$var_mv]] %in% input$second_in_mv)
+      
+      if (input$var_mv %in% c("day_of_week", "tod", "hod")) {
+       dataset3 %>%
+          filter(pol %in% mv_pol()) %>%
+          filter(.data[[input$var_mv]] %in% input$second_in_mv) %>%
+          group_by(site_id, id_room, pol) %>%
+          mutate(ecdf = ecdf(val)(val))
+        
+      } else
+       dataset3 %>%
+          filter(pol %in% mv_pol()) %>%
+          filter(.data[[input$var_mv]] %in% input$second_in_mv)
       
     } else if (mv_pt() == "norm") {
       "%ni%" <- Negate("%in%")
@@ -984,12 +1024,12 @@ function(input, output, session) {
       
     } else if (input$plot_type == "trend") {
       dataset2 <-
-        readRDS(paste0(rstudioapi::getActiveProject(),"/data/cdphe_ssa_trend.rds")) %>%
+        readRDS(paste0(rstudioapi::getActiveProject(),"/CDPHE_app_v1/data/cdphe_ssa_trend.rds")) %>%
         filter(.data[[input$var]] %in% input$second_in)
       
     } else if (input$plot_type == "pattern") {
       dataset2 <-
-        readRDS(paste0(rstudioapi::getActiveProject(),"/data/cdphe_ssa_pattern.rds")) %>%
+        readRDS(paste0(rstudioapi::getActiveProject(),"/CDPHE_app_v1/data/cdphe_ssa_pattern.rds")) %>%
         filter(.data[[input$var]] %in% input$second_in)
       
     } else {
