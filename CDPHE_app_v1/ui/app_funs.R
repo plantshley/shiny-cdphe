@@ -24,8 +24,8 @@ library(DT)
 #data
 dataset2 <- readRDS(paste0(rstudioapi::getActiveProject(),"/CDPHE_app_v1/data/cdphe_Mega_hr_fullweek25.rds"))
 dataset3 <- readRDS(paste0(rstudioapi::getActiveProject(),"/CDPHE_app_v1/data/cdphe_CFD_mega4.rds"))
-dataset4 <- readRDS(paste0(rstudioapi::getActiveProject(),"/CDPHE_app_v1/data/cdphe_Mega_hr_scaled_full_melt2.rds"))
-dataset5 <- readRDS(paste0(rstudioapi::getActiveProject(),"/CDPHE_app_v1/data/cdphe_Mega_hr_scaled_full2.rds"))
+dataset4 <- readRDS(paste0(rstudioapi::getActiveProject(),"/CDPHE_app_v1/data/cdphe_Mega_hr_scaled_full_melt2.rds")) #norm
+dataset5 <- readRDS(paste0(rstudioapi::getActiveProject(),"/CDPHE_app_v1/data/cdphe_Mega_hr_scaled_full2.rds")) #scatter
 
 #fivemin_1 <- readRDS(paste0(rstudioapi::getActiveProject(),"/data/5-min data/cdphe_MONGO_5min_scaled.rds"))
 #fivemin_2 <- readRDS(paste0(rstudioapi::getActiveProject(),"/data/5-min data/cdphe_MONGO_5min_scaled_melt.rds"))

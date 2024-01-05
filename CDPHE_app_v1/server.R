@@ -326,6 +326,11 @@ function(input, output, session) {
     })
     
     updateTabsetPanel(session, "tabs", selected = "uni_tab")
+    
+    output$plot_titleu <- renderUI({
+      h4(id = "plot_titleu", plot_titleu())
+    })
+    
     output$plot <- renderPlotly({ res = 96
     req(input$go, input$co2)
     p <- ggplotly(height = 800,  
@@ -401,6 +406,11 @@ function(input, output, session) {
       h1(id = "pm25_title", "Fine Particulate Matter Data")
     })
     updateTabsetPanel(session, "tabs", selected = "uni_tab")
+    
+    output$plot_titleu <- renderUI({
+      h4(id = "plot_titleu", plot_titleu())
+    })
+    
     output$plot <- renderPlotly({ res = 96
     
     req(input$go, input$pm25)
@@ -420,7 +430,7 @@ function(input, output, session) {
                                            "<b>Datetime:</b>", selected()$date), HTML)), 
                   xlim = t(), lwd = 0.25, show.legend = TRUE, legendgroup = "legend-text") + 
         xlim(t()) +
-        scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) +
+        scale_y_continuous(breaks = scales::pretty_breaks(n = 5)) +
         scale_color_manual(guide = "legend", 
                            labels = "text2",
                            values = colorsch()) + 
@@ -476,6 +486,11 @@ function(input, output, session) {
       h1(id = "voc_title", "Total Volatile Organic Compounds Data")
     })
     updateTabsetPanel(session, "tabs", selected = "uni_tab")
+    
+    output$plot_titleu <- renderUI({
+      h4(id = "plot_titleu", plot_titleu())
+    })
+    
     output$plot <- renderPlotly({ res = 96
     
     req(input$go, input$voc)
@@ -495,7 +510,7 @@ function(input, output, session) {
                                            "<b>Datetime:</b>", selected()$date), HTML)), 
                   xlim = t(), lwd = 0.25, show.legend = TRUE, legendgroup = "legend-text") + 
         xlim(t()) +
-        scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) +
+        scale_y_continuous(breaks = scales::pretty_breaks(n = 5)) +
         scale_color_manual(guide = "legend", 
                            labels = "text2",
                            values = colorsch()) + 
@@ -553,6 +568,10 @@ function(input, output, session) {
     updateTabsetPanel(session, "tabs", selected = "uni_tab")
     output$plot <- renderPlotly({ res = 96
     
+    output$plot_titleu <- renderUI({
+      h4(id = "plot_titleu", plot_titleu())
+    })
+    
     req(input$go, input$temp)
     p4 <- ggplotly(height = 800, 
       ggplot() +
@@ -570,7 +589,7 @@ function(input, output, session) {
                                            "<b>Datetime:</b>", selected()$date), HTML)), 
                   xlim = t(), lwd = 0.25, show.legend = TRUE, legendgroup = "legend-text") + 
         xlim(t()) +
-        scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) +
+        scale_y_continuous(breaks = scales::pretty_breaks(n = 5)) +
         scale_color_manual(guide = "legend", 
                            labels = "text2",
                            values = colorsch()) + 
@@ -625,7 +644,13 @@ function(input, output, session) {
     output$title <- renderUI({
       h1(id = "rh_title", "Relative Humidity Data")
     })
+    
     updateTabsetPanel(session, "tabs", selected = "uni_tab")
+    
+    output$plot_titleu <- renderUI({
+      h4(id = "plot_titleu", plot_titleu())
+    })
+    
     output$plot <- renderPlotly({ res = 96
     
     req(input$go, input$rh)
@@ -645,7 +670,7 @@ function(input, output, session) {
                                            "<b>Datetime:</b>", selected()$date), HTML)), 
                   xlim = t(), lwd = 0.25, show.legend = TRUE, legendgroup = "legend-text") + 
         xlim(t()) +
-        scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) +
+        scale_y_continuous(breaks = scales::pretty_breaks(n = 5)) +
         scale_color_manual(guide = "legend", 
                            labels = "text2",
                            values = colorsch()) + 
@@ -943,6 +968,27 @@ function(input, output, session) {
       ""
   }
     })
+  
+  # uni plot title  
+  plot_titleu <- eventReactive(input$go, {
+    req(input$plot_type)
+    
+    if (input$plot_type == "1hr") {
+      "Hourly-Averaged Time Series"
+      
+    } else if (input$plot_type == "24hr") {
+      "Daily-Averaged Time Series"
+      
+    } else if (input$plot_type == "trend") {
+      "Trend Line"
+      
+    } else if (input$plot_type == "pattern") {
+      "Fluctuation Line"
+      
+    } else {
+      ""
+    }
+  })
 # MV text  
   plot_pols <- eventReactive(input$plot_type_mv, {
     req(input$plot_type_mv)
@@ -1024,12 +1070,12 @@ function(input, output, session) {
       
     } else if (input$plot_type == "trend") {
       dataset2 <-
-        readRDS(paste0(rstudioapi::getActiveProject(),"/CDPHE_app_v1/data/cdphe_ssa_trend.rds")) %>%
+        readRDS(paste0(rstudioapi::getActiveProject(),"/CDPHE_app_v1/data/cdphe_ssa_trend2.rds")) %>%
         filter(.data[[input$var]] %in% input$second_in)
       
     } else if (input$plot_type == "pattern") {
       dataset2 <-
-        readRDS(paste0(rstudioapi::getActiveProject(),"/CDPHE_app_v1/data/cdphe_ssa_pattern.rds")) %>%
+        readRDS(paste0(rstudioapi::getActiveProject(),"/CDPHE_app_v1/data/cdphe_ssa_pattern2.rds")) %>%
         filter(.data[[input$var]] %in% input$second_in)
       
     } else {

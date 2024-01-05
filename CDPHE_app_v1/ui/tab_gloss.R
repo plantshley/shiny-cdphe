@@ -50,7 +50,7 @@ wellPanel(id = "gloss_well", width = "100%",
           tags$img(src = "plots_uni.png", id = "a3", 
                    style = "width: 70%; margin-left: 30px"),
           br(),
-          "hourly", "daily", "trend","line", "fluctuation", 
+          "hourly", "daily", "trend","line", "fluctuation", "daily averaged", "hourly averaged"
       
         ),
         
@@ -61,7 +61,8 @@ wellPanel(id = "gloss_well", width = "100%",
           tags$img(src = "plots_mv.png", id = "a4", 
                    style = "width: 70%; margin-left: 30px"),
           br(),
-          "CDF","scatter","cumulative distribution frequency", "normalized", "scale","time series", "normal", "norm"
+          "CDF","scatter","cumulative distribution frequency", "normalized", "scale","time series", 
+          "normal", "norm", "normalized hourly","normalized hourly plot"
         ),
         
         accordionItem(
@@ -93,10 +94,10 @@ wellPanel(id = "gloss_well", width = "100%",
           title = "Other Variables",
           collapsed = T,
           
-          tags$img(src = "vars_site.png", id = "a6", 
+          tags$img(src = "vars_other.png", id = "a7", 
                    style = "width: 70%; margin-left: 30px"),
           br(),
-          "leaky","moderate","tight","leakiness","shelters",
+          "leaky","moderate","tight","leakiness","number of air handlers",
           "air handlers", "hour of day", "time of day", "day of week", "season"
           
         ))

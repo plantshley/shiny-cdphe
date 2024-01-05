@@ -57,7 +57,9 @@ tabPanel(value = "uni_tab", id = "uni_tab", title = "uni",
                    fluidRow(
                      id = "mv_site",
                      align = "right",
-                     column(width = 10,
+                     column(width = 8,
+                            uiOutput("plot_titleu")), 
+                     column(width = 4,
                             conditionalPanel(
                               condition = "output.plot !== undefined && output.plot !== null",
                               searchInput(
@@ -69,6 +71,7 @@ tabPanel(value = "uni_tab", id = "uni_tab", title = "uni",
                               )
                             )
                      )
+                     
                    ),
           plotlyOutput("plot")
          ),
