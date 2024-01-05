@@ -44,6 +44,21 @@
         -webkit-background-clip: text !important;
         -webkit-text-fill-color: transparent !important;
     }
+    #plot_titleu {
+        font-family: Bahnschrift;
+        font-stretch: expanded; 
+        font-size: 20px;
+        text-transform: uppercase;
+        font-weight: 900;
+        display: flex;
+        justify-content: flex-start!important;
+        align-content: center!important;
+        margin-bottom: 0px!important;
+        margin-top: 13px;
+        background: linear-gradient(to left,#C268DD, #DD68A3, #DD7E68)!important;
+        -webkit-background-clip: text !important;
+        -webkit-text-fill-color: transparent !important;
+    }
     h5#mv_plot_pols, h5#mv_site {
       font-size: 14px;
     }
@@ -166,7 +181,7 @@
         margin-bottom: 2px;
       }
       .box-title a {
-        color: #BEB7FF;
+        color: #7B2C66;
 
       }
       .box-title a:hover, .box-title a:focus {
