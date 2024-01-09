@@ -32,7 +32,10 @@ tabPanel(value = "uni_tab", id = "uni_tab", title = "uni",
                    
                    fluidRow(
                      
-                     column(  
+                     column(
+                       bsTooltip("colors", "Note: You do not have to re-click Generate Plots if you change the just the color scheme.", 
+                                 placement = "left", trigger = "hover",
+                                 options = NULL),
                        prettyRadioButtons(
                          "colors", "Choose color scheme:", inline = TRUE,
                          choices = c("Default", "Rainbow", "Colorblind-Friendly"),
@@ -69,7 +72,10 @@ tabPanel(value = "uni_tab", id = "uni_tab", title = "uni",
                                 btnSearch = icon("wand-magic-sparkles"),
                                 btnReset = icon("circle-xmark")
                               )
-                            )
+                            ),
+                            bsTooltip("siteIDu_text", "To prevent potential errors, ensure the field is blank before changing variables and regenerating.", 
+                                      placement = "left", trigger = "hover",
+                                      options = NULL)
                      )
                      
                    ),

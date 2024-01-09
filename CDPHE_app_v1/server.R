@@ -2,58 +2,8 @@ source(paste0(rstudioapi::getActiveProject(),"/CDPHE_app_v1/ui/app_funs.R"))
 source("ui.R")
 
 function(input, output, session) {
-
-
-#Update selected_mv & selected for siteID
-  
-  observe({
-    if (input$siteID != "" ){
-      site_ids <- strsplit(input$siteID, ',')[[1]]
-      
-      mv2 <- origen()
-      mv2 <- mv2 %>%
-        filter(site_id %in% site_ids)
-        selected_mv(mv2)
-      
-    } else {
-      mv2 <- origen()
-      selected_mv(mv2)
-
-    } 
-  })
-  
-  observe({
-    if (input$siteIDu != "" ){
-      site_ids <- strsplit(input$siteIDu, ',')[[1]]
-      
-      uni2 <- origen0()
-      uni2 <- uni2 %>%
-        filter(site_id %in% site_ids)
-      selected(uni2)
-      
-    } else {
-      uni2 <- origen0()
-      selected(uni2)
-      
-    } 
-  })
-#Glossary Search
-  observeEvent(input$search, {
-    shinyjs::runjs(
-      sprintf(
-        "$items = $('#accordion1 .panel.box.box-solid');
-         $items.detach().sort(function(a, b) {
-           var aText = $(a).text().toLowerCase();
-           var bText = $(b).text().toLowerCase();
-           return (aText.includes('%s') ? -1 : aText.localeCompare(bText));
-         });
-         $('#accordion1').empty().append($items);",
-        tolower(input$search)
-      ) 
-    ) 
-  })
-  
-#Tab buttons
+ 
+############Tab buttons############
   #HOME TAB
   observeEvent(input$home, {
     output$title <- renderUI({
@@ -61,7 +11,7 @@ function(input, output, session) {
     })
     updateTabsetPanel(session, "tabs", selected = "home_tab")
   })
-  
+   #properly display content images
   observe({
     
   if (input$hb_tabs == "About the App") {
@@ -79,6 +29,7 @@ function(input, output, session) {
     })
   } 
   })
+  
 ###### MV TAB######
   observeEvent(input$mv, {
     output$title <- renderUI({
@@ -95,9 +46,12 @@ function(input, output, session) {
 
     output$plot_mv <- renderPlotly({ res = 96
     req(input$go_mv, input$mv)
-    
-    # CDF PLOT
+      
+# CDF PLOT
     if (mv_pt() == "cfd") {
+      validate(
+        need(selected_mv()$val, "Sorry, there is no data available for your selection. (Or there is a lot of data and I need more time to load...)"
+        ))
     p6 <- ggplotly(height = 900, 
                   ggplot(data = selected_mv(), aes(x = val, y = ecdf, color = paste(site_id, id_room),
                                                    text2 = map(paste(
@@ -113,10 +67,10 @@ function(input, output, session) {
                     scale_x_continuous(breaks = scales::pretty_breaks(n = 10)) +
                     scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) +
                     ylab("Percent of selected subvariable data\n") +
-                    xlab("\nSelected Indicator Value (ppm, μg/m3, ppb, °C, etc)\n") +
+                    xlab("\nSelected indicator value (ppm, μg/m3, ppb, °C, etc)\n") +
                     scale_color_manual(guide = "legend", 
                                        labels = "text2",
-                                       values = colorsch_mv()) + 
+                                       values = colorsch_mv2()) + 
                     guides(fill= guide_legend(
                       override.aes = list(
                         shape = NULL, 
@@ -154,8 +108,6 @@ function(input, output, session) {
       p6, 
       legend = list(title = "", font = list(family = "Bahnschrift", size = 12),
                     itemwidth = 1)
-      #xaxis = list(title = list(standoff = 40, automargin = TRUE), showgrid = TRUE, minorgridwidth = 0.25, minorgridcolor = "#F0E7F1"),
-      #yaxis = list(title = list(standoff = 40, automargin = TRUE))
     ) %>%
       config(displayModeBar = "static", displaylogo = FALSE, 
              modeBarButtonsToRemove = list("sendDataToCloud", "toImage", "autoScale2d", 
@@ -169,6 +121,9 @@ function(input, output, session) {
     
 # NORMALIZED PLOT    
     } else if (mv_pt() == "norm") {
+      validate(
+        need(selected_mv()$val, "Sorry, there is no data available for your selection. (Or there is a lot of data and I need more time to load...)"
+        ))
       
     p7 <- ggplotly(height = 800, 
                    ggplot() +
@@ -185,13 +140,13 @@ function(input, output, session) {
                                                       "<b>Season:</b>", selected_mv()$season, "<br>",
                                                       "<b>Datetime:</b>", selected_mv()$date), HTML)), 
                                lwd = 0.2, ylim = c(0,1)) +
-                     scale_x_continuous(breaks = seq(0, max(selected_mv()$how, 0), by = 24)) +
+                     scale_x_continuous(breaks = seq(0, max(selected_mv()$how), by = 24)) +
                      scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) +
                      ylab(" ") + 
                      labs(x = "\nHour (0 = 12am the first Sunday of data)\n") +
                      scale_color_manual(guide = "legend", 
                                         labels = "text2",
-                                        values = colorsch_mv()) + 
+                                        values = colorsch_mv2()) + 
                      guides(fill= guide_legend(
                        override.aes = list(
                          shape = NULL, 
@@ -241,8 +196,13 @@ function(input, output, session) {
     w$hide()
     p7
 
-#SCATTER PLOT
+# SCATTER PLOT
     } else if (mv_pt() == "scat") {
+      validate(
+        need(length(mv_pol()) == 2, "Please refresh the page and ensure you have TWO indicators selected for the Scatter Plot."), 
+        need(nrow(selected_mv()) != 0, "Sorry, there is no data available for your selection. (Or there is a lot of data and I need more time to load...)"
+        ))
+      
       p8 <- ggplotly(height = 600,
                      ggplot() +
                        geom_abline(slope=1, intercept = 0, lty = "11", color = "lightgrey", alpha = 0.75) +
@@ -267,7 +227,7 @@ function(input, output, session) {
                        xlab(paste("\n",toupper(mv_pol()[1]))) +
                        scale_color_manual(guide = "legend", 
                                           labels = "text2",
-                                          values = colorsch_mv()) + 
+                                          values = colorsch_mv2()) + 
                        guides(fill= guide_legend(
                          override.aes = list(
                            shape = NULL, 
@@ -320,7 +280,6 @@ function(input, output, session) {
     } else {
     p6
     }
-    
     })
     }) 
 ######CO2 TAB######
@@ -337,6 +296,9 @@ function(input, output, session) {
     
     output$plot <- renderPlotly({ res = 96
     req(input$go, input$co2)
+    validate(
+      need(length(selected()$co2) != 0, "Sorry, there is no data available for your selection. (Or there is a lot of data and I need more time to load...)"
+      ))
     p <- ggplotly(height = 800,  
       ggplot() +
         geom_line(data = selected(), aes(x = how, y = co2, color = paste(site_id, id_room),
@@ -356,7 +318,7 @@ function(input, output, session) {
         scale_y_continuous(breaks = scales::pretty_breaks(n = 5)) +
         scale_color_manual(guide = "legend", 
                            labels = "text2",
-                           values = colorsch()) + 
+                           values = colorsch2()) + 
         guides(fill= guide_legend(
           override.aes = list(
             shape = NULL, 
@@ -418,6 +380,9 @@ function(input, output, session) {
     output$plot <- renderPlotly({ res = 96
     
     req(input$go, input$pm25)
+    validate(
+      need(length(selected()$pm25) != 0, "Sorry, there is no data available for your selection. (Or there is a lot of data and I need more time to load...)"
+      ))
     p2 <- ggplotly(height = 800,
       ggplot() +
         geom_line(data = selected(), aes(x = how, y = pm25, color = paste(site_id, id_room),
@@ -437,7 +402,7 @@ function(input, output, session) {
         scale_y_continuous(breaks = scales::pretty_breaks(n = 5)) +
         scale_color_manual(guide = "legend", 
                            labels = "text2",
-                           values = colorsch()) + 
+                           values = colorsch2()) + 
         guides(fill= guide_legend(
           override.aes = list(
             shape = NULL, 
@@ -498,6 +463,9 @@ function(input, output, session) {
     output$plot <- renderPlotly({ res = 96
     
     req(input$go, input$voc)
+    validate(
+      need(length(selected()$voc) != 0, "Sorry, there is no data available for your selection. (Or there is a lot of data and I need more time to load...)"
+      ))
     p3 <- ggplotly(height = 800,
       ggplot() +
         geom_line(data = selected(), aes(x = how, y = voc, color = paste(site_id, id_room),
@@ -517,7 +485,7 @@ function(input, output, session) {
         scale_y_continuous(breaks = scales::pretty_breaks(n = 5)) +
         scale_color_manual(guide = "legend", 
                            labels = "text2",
-                           values = colorsch()) + 
+                           values = colorsch2()) + 
         guides(fill= guide_legend(
           override.aes = list(
             shape = NULL, 
@@ -577,6 +545,9 @@ function(input, output, session) {
     })
     
     req(input$go, input$temp)
+    validate(
+      need(length(selected()$temp) != 0, "Sorry, there is no data available for your selection. (Or there is a lot of data and I need more time to load...)"
+      ))
     p4 <- ggplotly(height = 800, 
       ggplot() +
         geom_line(data = selected(), aes(x = how, y = temp, color = paste(site_id, id_room),
@@ -596,7 +567,7 @@ function(input, output, session) {
         scale_y_continuous(breaks = scales::pretty_breaks(n = 5)) +
         scale_color_manual(guide = "legend", 
                            labels = "text2",
-                           values = colorsch()) + 
+                           values = colorsch2()) + 
         guides(fill= guide_legend(
           override.aes = list(
             shape = NULL, 
@@ -658,6 +629,9 @@ function(input, output, session) {
     output$plot <- renderPlotly({ res = 96
     
     req(input$go, input$rh)
+    validate(
+      need(length(selected()$RH) != 0, "Sorry, there is no data available for your selection. (Or there is a lot of data and I need more time to load...)"
+      ))
     p5 <- ggplotly(height = 800, 
       ggplot() +
         geom_line(data = selected(), aes(x = how, y = RH, color = paste(site_id, id_room),
@@ -677,7 +651,7 @@ function(input, output, session) {
         scale_y_continuous(breaks = scales::pretty_breaks(n = 5)) +
         scale_color_manual(guide = "legend", 
                            labels = "text2",
-                           values = colorsch()) + 
+                           values = colorsch2()) + 
         guides(fill= guide_legend(
           override.aes = list(
             shape = NULL, 
@@ -726,7 +700,7 @@ function(input, output, session) {
     })
   })
   
-######Glossary Tab######
+######Glossary Tab
   observeEvent(input$glossary, {
     shinyjs::enable(id = "accordion1")
     
@@ -736,7 +710,6 @@ function(input, output, session) {
     
     updateTabsetPanel(session, "tabs", selected = "glossary tab")
   })
-  
 
 #Reactives
   t <- eventReactive(input$go,{input$hour})
@@ -744,23 +717,10 @@ function(input, output, session) {
   
   mv_pol <- eventReactive(input$go_mv, {input$pol})
   mv_pt <- eventReactive(input$go_mv, {input$plot_type_mv})
-  colorsch <- eventReactive(input$go, {
-    num_vals <- length(unique(paste(selected()$site_id, selected()$id_room)))
-    switch(input$colors,
-           "Default" = colorRampPalette(c("#4FD9D9", "#FF68BD"))(num_vals),
-           "Rainbow" = colorRampPalette(c("#F8766D", "#00C0B8","#529EFF","#FF689F"))(num_vals),
-           "Colorblind-Friendly" = viridis::plasma(num_vals))
-  })
-  
-# mv colors  
-  colorsch_mv <- eventReactive(input$go_mv, {
-    num_vals <- length(unique(paste(selected_mv()$site_id, selected_mv()$id_room)))
-    switch(input$colors_mv,
-           "Default" = colorRampPalette(c("#4FD9D9", "#FF68BD"))(num_vals),
-           "Rainbow" = colorRampPalette(c("#F8766D", "#00C0B8","#529EFF","#FF689F"))(num_vals),
-           "Colorblind-Friendly" = viridis::plasma(num_vals))
-  })
-  
+ 
+  colorsch2 <- reactiveVal(NULL)
+  colorsch_mv2 <- reactiveVal(NULL)
+
 #Subvariables (mv tab)
   observeEvent(input$var_mv, {
     if (input$var_mv == "site_type") {
@@ -883,7 +843,6 @@ function(input, output, session) {
   })  
   
 #Subvariables (uni tab)
-
   observeEvent(input$var, {
     if (input$var == "site_type") {
       updatePickerInput(session, "second_in", "Choose site type(s):",
@@ -955,7 +914,7 @@ function(input, output, session) {
   w_mv <- waiter::Waiter$new(color = transparent(), html = spin_solar())
   w <- waiter::Waiter$new(color = transparent(), html = spin_solar())
   
-# MV plot title  
+#MV plot title  
   plot_title <- eventReactive(input$go_mv, {
     req(input$plot_type_mv)
     
@@ -973,7 +932,7 @@ function(input, output, session) {
   }
     })
   
-  # uni plot title  
+#Uni plot title  
   plot_titleu <- eventReactive(input$go, {
     req(input$plot_type)
     
@@ -993,7 +952,8 @@ function(input, output, session) {
       ""
     }
   })
-# MV text  
+  
+#MV text  
   plot_pols <- eventReactive(input$plot_type_mv, {
     req(input$plot_type_mv)
     
@@ -1019,6 +979,7 @@ function(input, output, session) {
     req(input$var_mv, input$second_in_mv)
     
     w_mv$show()
+    
     mv1 <- 
     if (mv_pt() == "cfd") {
       
@@ -1038,9 +999,6 @@ function(input, output, session) {
       "%ni%" <- Negate("%in%")
         dataset4 %>%
         filter(pol %in% mv_pol()) %>%
-        #mutate(
-         # val = replace(val, .data[[input$var_mv]] %ni% input$second_in_mv, NA),
-          #how = replace(how, .data[[input$var_mv]] %ni% input$second_in_mv, NA))
         filter(.data[[input$var_mv]] %in% input$second_in_mv)
       
     } else if (mv_pt() == "scat") {
@@ -1053,6 +1011,15 @@ function(input, output, session) {
     }
     origen(mv1)
     selected_mv(mv1)
+    
+    num_vals <- length(unique(paste(selected_mv()$site_id, selected_mv()$id_room)))
+    cmv2 <- 
+      switch(input$colors_mv,
+             "Default" = colorRampPalette(c("#4FD9D9", "#FF68BD"))(num_vals),
+             "Rainbow" = colorRampPalette(c("#F8766D", "#00C0B8","#529EFF","#FF689F"))(num_vals),
+             "Colorblind-Friendly" = viridis::plasma(num_vals))
+    
+    colorsch_mv2(cmv2)
   })
   
 #Selected data (uni tab)
@@ -1090,6 +1057,82 @@ function(input, output, session) {
     selected(uni1)
   })
 
+  
+  
+#Update selected_mv & selected for siteID
+  observe({
+    if (input$siteID != "" & is.character(input$siteID)){
+      site_ids <- strsplit(input$siteID, ',')[[1]]
+      
+      mv2 <- origen()
+      mv2 <- mv2 %>%
+        filter(site_id %in% site_ids)
+      selected_mv(mv2)
+      
+    } else {
+      mv2 <- origen()
+      selected_mv(mv2)
+      
+    } 
+    num_vals <- length(unique(paste(selected_mv()$site_id, selected_mv()$id_room)))
+    cmv2 <- 
+      switch(input$colors_mv,
+             "Default" = colorRampPalette(c("#4FD9D9", "#FF68BD"))(num_vals),
+             "Rainbow" = colorRampPalette(c("#F8766D", "#00C0B8","#529EFF","#FF689F"))(num_vals),
+             "Colorblind-Friendly" = viridis::plasma(num_vals))
+    
+    colorsch_mv2(cmv2)
+  })
+  
+  observe({
+    if (input$siteIDu != "" ){
+      site_ids <- strsplit(input$siteIDu, ',')[[1]]
+      
+      uni2 <- origen0()
+      uni2 <- uni2 %>%
+        filter(site_id %in% site_ids)
+      selected(uni2)
+      
+    } else {
+      uni2 <- origen0()
+      selected(uni2)
+      
+    }
+    num_vals <- length(unique(paste(selected()$site_id, selected()$id_room)))
+    c2 <- 
+      switch(input$colors,
+             "Default" = colorRampPalette(c("#4FD9D9", "#FF68BD"))(num_vals),
+             "Rainbow" = colorRampPalette(c("#F8766D", "#00C0B8","#529EFF","#FF689F"))(num_vals),
+             "Colorblind-Friendly" = viridis::plasma(num_vals))
+    
+    colorsch2(c2)
+  }) 
+  
+#Reset search input when go is clicked   
+  observeEvent(input$go_mv, {
+    runjs("Shiny.setInputValue( 'siteID', '' );")
+  })
+  observeEvent(input$go, {
+    runjs("Shiny.setInputValue( 'siteIDu', '' );")
+  })
+  
+#Glossary Search
+  observeEvent(input$search, {
+    shinyjs::runjs(
+      sprintf(
+        "$items = $('#accordion1 .panel.box.box-solid');
+         $items.detach().sort(function(a, b) {
+           var aText = $(a).text().toLowerCase();
+           var bText = $(b).text().toLowerCase();
+           return (aText.includes('%s') ? -1 : aText.localeCompare(bText));
+         });
+         $('#accordion1').empty().append($items);",
+        tolower(input$search)
+      ) 
+    ) 
+  })
+  
+#Plotly legend
   observeEvent(event_data("plotly_legendclick"), {
     # Get the legend item clicked
     click_data <- event_data("plotly_legendclick")

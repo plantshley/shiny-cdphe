@@ -35,7 +35,10 @@ tabPanel(value = "mv_tab", id = "mv_tab", title = "mv",
                    
                    fluidRow(
                      
-                     column(  
+                     column(
+                       bsTooltip("colors_mv", "Note: You do not have to re-click Generate Plots if you change the just the color scheme.", 
+                                 placement = "left", trigger = "hover",
+                                 options = NULL),
                        prettyRadioButtons(
                          "colors_mv", "Choose color scheme:", inline = TRUE,
                          choices = c("Default", "Rainbow", "Colorblind-Friendly"),
@@ -89,9 +92,9 @@ tabPanel(value = "mv_tab", id = "mv_tab", title = "mv",
                                 btnSearch = icon("wand-magic-sparkles"),
                                 btnReset = icon("circle-xmark")
                               ),
-                              bsTooltip("siteID_text", "To prevent errors, ensure the field is blank before changing variables and regenerating.", 
+                              bsTooltip("siteID_text", "To prevent potential errors, ensure the field is blank before changing variables and regenerating.", 
                                         placement = "left", trigger = "hover",
-                                        options = NULL),
+                                        options = NULL)
                             )
                      )
                    ),
