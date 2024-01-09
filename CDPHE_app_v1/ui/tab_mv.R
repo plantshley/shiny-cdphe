@@ -81,14 +81,17 @@ tabPanel(value = "mv_tab", id = "mv_tab", title = "mv",
                      align = "right",
                      column(width = 10,
                             conditionalPanel(
-                              condition = "output.plot_mv !== undefined && output.plot_mv !== null",
+                              condition = "output.plot_title !== undefined && output.title !== null",
                               searchInput(
                                 inputId = "siteID",
                                 label = "Filter for Site(s)",
                                 placeholder = "ex. 005a, 077",
                                 btnSearch = icon("wand-magic-sparkles"),
                                 btnReset = icon("circle-xmark")
-                              )
+                              ),
+                              bsTooltip("siteID_text", "To prevent errors, ensure the field is blank before changing variables and regenerating.", 
+                                        placement = "left", trigger = "hover",
+                                        options = NULL),
                             )
                      )
                    ),

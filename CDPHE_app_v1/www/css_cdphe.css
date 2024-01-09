@@ -276,6 +276,18 @@
         color: #9D919E;
         font-weight: normal;
       }
+      .tooltip-inner {
+        background: linear-gradient(to right, #FFC9EF, #FFCEDA, #FFE2BA);
+        border-color: transparent;
+        color: #7B2C66;
+        padding: 8px;
+        border-radius: 25px;
+      }
+      .tooltip.left .tooltip-arrow {
+        border-left-color: #FFE2BA;
+        color: #FFE2BA;
+      }
+
       .col-sm-10  {
         margin-right: 18px;
       }

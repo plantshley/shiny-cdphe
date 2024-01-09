@@ -11,16 +11,16 @@ tabPanel(value = "home_tab", id = "home_tab", title = 'Home',
       tags$img(src = "shiny-slide.png")),
     
     carouselItem(
-      tags$img(src = "pm2.5_.png")),
+      tags$img(src = "pm2.5.png")),
     
     carouselItem(
-      tags$img(src = "tvoc2.png")),
+      tags$img(src = "tvoc.png")),
     
     carouselItem(
-      tags$img(src = "temp2.png")),
+      tags$img(src = "temp.png")),
     
     carouselItem(
-      tags$img(src = "rh_.png")),
+      tags$img(src = "rh.png")),
     
     carouselItem(
       tags$img(src = "refs.png"))
@@ -33,7 +33,7 @@ tabPanel(value = "home_tab", id = "home_tab", title = 'Home',
            tabsetPanel(id = "hb_tabs", type = "tabs", selected = "Home",
                        
                        tabPanel(title = "Home", align = "center",
-                                tags$img(src = "home2.png", id = "img0", 
+                                tags$img(src = "home.png", id = "img0", 
                                          style = "width: 100%;")), 
                        
                        tabPanel(title = "About the App", align = "center",
@@ -43,7 +43,7 @@ tabPanel(value = "home_tab", id = "home_tab", title = 'Home',
                                           style = "width: 80%;")),
                        
                        tabPanel(title = "How to Use the App", align = "center", 
-                                tags$img(src = "use12.png", id = "img3", 
+                                tags$img(src = "use1.png", id = "img3", 
                                          style = "width: 80%;"),
                                 tags$img(src = "use2.png", id = "img4", 
                                          style = "width: 80%;"),

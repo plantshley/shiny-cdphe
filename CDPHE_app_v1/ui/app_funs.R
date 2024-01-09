@@ -20,6 +20,8 @@ library(reshape2)
 library(scrollrevealR)
 library(fresh)
 library(DT)
+library(shinyBS)
+
 
 #data
 dataset2 <- readRDS(paste0(rstudioapi::getActiveProject(),"/CDPHE_app_v1/data/cdphe_Mega_hr_fullweek25.rds"))

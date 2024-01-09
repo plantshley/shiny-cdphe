@@ -61,7 +61,7 @@ tabPanel(value = "uni_tab", id = "uni_tab", title = "uni",
                             uiOutput("plot_titleu")), 
                      column(width = 4,
                             conditionalPanel(
-                              condition = "output.plot !== undefined && output.plot !== null",
+                              condition = "output.plot_titleu !== undefined && output.plot_titleu !== null",
                               searchInput(
                                 inputId = "siteIDu",
                                 label = "Filter for Site(s)",

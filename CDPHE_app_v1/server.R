@@ -2,7 +2,10 @@ source(paste0(rstudioapi::getActiveProject(),"/CDPHE_app_v1/ui/app_funs.R"))
 source("ui.R")
 
 function(input, output, session) {
+
+
 #Update selected_mv & selected for siteID
+  
   observe({
     if (input$siteID != "" ){
       site_ids <- strsplit(input$siteID, ',')[[1]]
@@ -11,13 +14,14 @@ function(input, output, session) {
       mv2 <- mv2 %>%
         filter(site_id %in% site_ids)
         selected_mv(mv2)
-
+      
     } else {
       mv2 <- origen()
       selected_mv(mv2)
 
     } 
   })
+  
   observe({
     if (input$siteIDu != "" ){
       site_ids <- strsplit(input$siteIDu, ',')[[1]]
@@ -181,7 +185,7 @@ function(input, output, session) {
                                                       "<b>Season:</b>", selected_mv()$season, "<br>",
                                                       "<b>Datetime:</b>", selected_mv()$date), HTML)), 
                                lwd = 0.2, ylim = c(0,1)) +
-                     scale_x_continuous(breaks = seq(0, max(selected_mv()$how), by = 24)) +
+                     scale_x_continuous(breaks = seq(0, max(selected_mv()$how, 0), by = 24)) +
                      scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) +
                      ylab(" ") + 
                      labs(x = "\nHour (0 = 12am the first Sunday of data)\n") +
