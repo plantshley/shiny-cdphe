@@ -10,7 +10,7 @@ fluidPage(
 
   waiter::useWaiter(), 
   shinyjs::useShinyjs(),
-
+  
   # Dynamic Title
   uiOutput("title"), 
   

@@ -62,7 +62,7 @@ wellPanel(id = "gloss_well", width = "100%",
                    style = "width: 70%; margin-left: 30px"),
           br(),
           "CDF","scatter","cumulative distribution frequency", "normalized", "scale","time series", 
-          "normal", "norm", "normalized hourly","normalized hourly plot"
+          "normal", "norm", "normalized hourly","normalized hourly plot", "normal hourly"
         ),
         
         accordionItem(

@@ -878,7 +878,7 @@ function(input, output, session) {
       ) 
       
     } else if (input$var == "leakiness") {
-      updatePickerInput(session,"second_in", "Building Leakiness",
+      updatePickerInput(session,"second_in", "Building Leakiness:",
                         choices = leaky,
                         choicesOpt = list(content = c(
                           pickerFormat01("#FFCEDA", "fa fa-carrot", "Leaky"),
@@ -897,7 +897,7 @@ function(input, output, session) {
       )
       
     } else if (input$var == "ah_groups") {
-      updatePickerInput(session,"second_in", "Number of Airhandlers",
+      updatePickerInput(session,"second_in", "Number of Airhandlers:",
                         choices = air_hands,
                         choicesOpt = list(content = c(
                           pickerFormat01("#FFCFC5", "fa fa-solid fa-fish", "Less than 10"),
