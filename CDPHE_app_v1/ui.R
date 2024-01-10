@@ -5,8 +5,6 @@ source(paste0(rstudioapi::getActiveProject(),"/CDPHE_app_v1/ui/app_funs.R"))
 fluidPage(
   
   includeCSS(paste0(getActiveProject(), "/CDPHE_app_v1/www/css_cdphe.css")),
-  #tags$head(
-    #tags$link(rel = "stylesheet", type = "text/css", href = paste0(getwd(), "/CDPHE_app_v1/www/css_cdphe.css"))),
 
   waiter::useWaiter(), 
   shinyjs::useShinyjs(),

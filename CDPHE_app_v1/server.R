@@ -50,33 +50,25 @@ function(input, output, session) {
 # CDF PLOT
     if (mv_pt() == "cfd") {
       validate(
-        need(selected_mv()$val, "Sorry, there is no data available for your selection. (Or there is a lot of data and I need more time to load...)"
+        need(selected_mv()$val, "Sorry, there is no data available for your selection. (Or it could be there is a lot of data and I need more time to load...)"
         ))
     p6 <- ggplotly(height = 900, 
                   ggplot(data = selected_mv(), aes(x = val, y = ecdf, color = paste(site_id, id_room),
-                                                   text2 = map(paste(
-                                                     selected_mv()$site_id, " ", selected_mv()$room), HTML), 
                                                    text = map(paste(  
-                                                     "<b> Site ID:", paste(selected_mv()$site_id, selected_mv()$id_room),"<br>",
+                                                     "<b> Site ID: </b>", paste(selected_mv()$site_id, selected_mv()$id_room),"<br>",
                                                      "<b>Value:</b>", round(selected_mv()$val, digits = 1),"<br>",
                                                      "<b>Percentage:</b>", paste0(round(selected_mv()$ecdf*100, digits =1), "%"), "<br>",
                                                      "<b>Site Type:</b>", selected_mv()$site_type,"<br>",
                                                      "<b>Room Type:</b>", selected_mv()$room_type,"<br>",
-                                                     "<b>Season:</b>", selected_mv()$season), HTML)), lwd = 0.25, ylim = c(0,1)) +
+                                                     "<b>Season:</b>", selected_mv()$season), HTML)), lwd = 0.25) +
                     geom_step(lwd = 0.25) +
                     scale_x_continuous(breaks = scales::pretty_breaks(n = 10)) +
-                    scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) +
+                    scale_y_continuous(breaks = scales::pretty_breaks(n = 10), limits = c(0,1)) +
                     ylab("Percent of selected subvariable data\n") +
                     xlab("\nSelected indicator value (ppm, μg/m3, ppb, °C, etc)\n") +
-                    scale_color_manual(guide = "legend", 
-                                       labels = "text2",
+                    scale_color_manual(guide = "legend",
                                        values = colorsch_mv2()) + 
-                    guides(fill= guide_legend(
-                      override.aes = list(
-                        shape = NULL, 
-                        size = 1, 
-                        stroke = 1))) +
-                    facet_wrap(~pol, ncol=1, scales = "free_x", #strip.position = "bottom",
+                    facet_wrap(~pol, ncol=1, scales = "free_x",
                                labeller = as_labeller(c(co2 = "CO2 (ppm)", 
                                                         pm25 = "PM2.5 (μg/m3)",
                                                         voc = "TVOC (ppb)",
@@ -93,7 +85,6 @@ function(input, output, session) {
                       strip.text = element_text(face = "bold", angle = 0, size = 10, color = "black", family = "Bahnschrift",
                                                 margin = margin(t = 1.5, unit = "mm")),
                       strip.background = element_rect(fill = "#EDDFF9", size = 1),
-                      #strip.placement = "outside", 
                       panel.spacing.x = unit(0.5, "mm"),
                       plot.margin = margin(t = 0, r = 0, b = 0, l = 0, unit = "pt"),
                       panel.background = element_rect(fill = "white", color = '#F0E7F1', linewidth =1.5),
@@ -103,11 +94,11 @@ function(input, output, session) {
                       panel.grid.major.x = element_line(color = "#F0E7F1", size = 0.25),
                       panel.grid.minor.x = element_line(color = "#F0E7F1", size = 0.25)),
                   tooltip = "text"
-    )
+                  )
     p6 <- layout(
       p6, 
       legend = list(title = "", font = list(family = "Bahnschrift", size = 12),
-                    itemwidth = 1)
+                    itemsizing='constant')
     ) %>%
       config(displayModeBar = "static", displaylogo = FALSE, 
              modeBarButtonsToRemove = list("sendDataToCloud", "toImage", "autoScale2d", 
@@ -117,7 +108,7 @@ function(input, output, session) {
       event_register('plotly_legendclick')
     
     w_mv$hide()
-    p6
+    p6 
     
 # NORMALIZED PLOT    
     } else if (mv_pt() == "norm") {
@@ -128,10 +119,8 @@ function(input, output, session) {
     p7 <- ggplotly(height = 800, 
                    ggplot() +
                      geom_line(data = selected_mv(), aes(x = how, y = val, color = paste(site_id, id_room),
-                                                    text2 = map(paste(
-                                                      selected_mv()$site_id, " ", selected_mv()$room), HTML), 
                                                     text = map(paste(  
-                                                      "<b> Site ID:", paste(selected_mv()$site_id, selected_mv()$id_room),"<br>",
+                                                      "<b> Site ID:</b>", paste(selected_mv()$site_id, selected_mv()$id_room),"<br>",
                                                       "<b>Scaled Value:</b>", round(selected_mv()$val, digits = 2),"<br>",
                                                       "<b>Hour:</b>", selected_mv()$how,"<br>",
                                                       "<b>Day of Week:</b>", selected_mv()$day_of_week,"<br>",
@@ -139,19 +128,13 @@ function(input, output, session) {
                                                       "<b>Room Type:</b>", selected_mv()$room_type,"<br>",
                                                       "<b>Season:</b>", selected_mv()$season, "<br>",
                                                       "<b>Datetime:</b>", selected_mv()$date), HTML)), 
-                               lwd = 0.2, ylim = c(0,1)) +
+                               lwd = 0.2) +
                      scale_x_continuous(breaks = seq(0, max(selected_mv()$how), by = 24)) +
-                     scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) +
+                     scale_y_continuous(breaks = scales::pretty_breaks(n = 10), limits = c(0,1)) +
                      ylab(" ") + 
-                     labs(x = "\nHour (0 = 12am the first Sunday of data)\n") +
-                     scale_color_manual(guide = "legend", 
-                                        labels = "text2",
+                     labs(x = "\nHour (0 = 12am the first Sunday of collected data)\n") +
+                     scale_color_manual(guide = "legend",
                                         values = colorsch_mv2()) + 
-                     guides(fill= guide_legend(
-                       override.aes = list(
-                         shape = NULL, 
-                         size = 1, 
-                         stroke = 1))) +
                      facet_wrap(~pol, ncol=1, scales = "fixed", #strip.position = "bottom",
                                 labeller = as_labeller(c(co2 = "CO2", 
                                                          pm25 = "PM2.5",
@@ -167,8 +150,7 @@ function(input, output, session) {
                        axis.title.x = element_text(family = "Bahnschrift", size = 12, margin = margin(t = 5, b = 5, unit = "mm")),
                        strip.text = element_text(face = "bold", angle = 0, size = 10, color = "black", family = "Bahnschrift",
                                                  margin = margin(t = 1.5, unit = "mm")),
-                       strip.background = element_rect(fill = "#EDDFF9", size = 1),
-                       #strip.placement = "outside", 
+                       strip.background = element_rect(fill = "#EDDFF9", size = 1), 
                        panel.spacing.x = unit(0.5, "mm"),
                        plot.margin = margin(t = 0, r = 0, b = 0, l = 0, unit = "pt"),
                        panel.background = element_rect(fill = "white", color = '#F0E7F1', linewidth =1.5),
@@ -182,7 +164,7 @@ function(input, output, session) {
     p7 <- layout(
       p7, 
       legend = list(title = "", font = list(family = "Bahnschrift", size = 12),
-                    itemwidth = 1),
+                    itemsizing='constant'),
       xaxis = list(showgrid = TRUE, minorgridwidth = 0.25, minorgridcolor = "#F0E7F1")
     ) %>%
       config(displayModeBar = "static", displaylogo = FALSE, 
@@ -206,11 +188,10 @@ function(input, output, session) {
       p8 <- ggplotly(height = 600,
                      ggplot() +
                        geom_abline(slope=1, intercept = 0, lty = "11", color = "lightgrey", alpha = 0.75) +
-                       geom_point(data = selected_mv(), aes(x = .data[[mv_pol()[1]]], y = .data[[mv_pol()[2]]], color = paste(site_id, id_room),
-                                                           text2 = map(paste(
-                                                             selected_mv()$site_id, " ", selected_mv()$room), HTML), 
+                       geom_point(data = selected_mv(), aes(x = .data[[mv_pol()[1]]], y = .data[[mv_pol()[2]]], 
+                                                            color = paste(site_id, id_room), 
                                                            text = map(paste(  
-                                                             "<b> Site ID:", paste(selected_mv()$site_id, selected_mv()$id_room),"<br>",
+                                                             "<b> Site ID: </b>", paste(selected_mv()$site_id, selected_mv()$id_room),"<br>",
                                                              "<b>Y-Value:</b>", round(selected_mv()[[mv_pol()[2]]], digits = 2),"<br>",
                                                              "<b>X-Value:</b>", round(selected_mv()[[mv_pol()[1]]], digits = 2),"<br>",
                                                              "<b>Day of Week:</b>", selected_mv()$day_of_week,"<br>",
@@ -221,24 +202,12 @@ function(input, output, session) {
                                                              "<b>Datetime:</b>", selected_mv()$date), HTML)), 
                                   lwd = 0.25, size = 0.5) +
                        geom_abline(slope=1, intercept = 0, lty = "11", color = "lightgrey", alpha = 0.75) +
-                       scale_x_continuous(breaks = scales::pretty_breaks(n = 10)) +
-                       scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) +
+                       scale_x_continuous(breaks = scales::pretty_breaks(n = 10), limits = c(0,1)) +
+                       scale_y_continuous(breaks = scales::pretty_breaks(n = 10), limits = c(0,1)) +
                        ylab(paste(toupper(mv_pol()[2]), "\n")) + 
                        xlab(paste("\n",toupper(mv_pol()[1]))) +
-                       scale_color_manual(guide = "legend", 
-                                          labels = "text2",
+                       scale_color_manual(guide = "legend",
                                           values = colorsch_mv2()) + 
-                       guides(fill= guide_legend(
-                         override.aes = list(
-                           shape = NULL, 
-                           size = 1, 
-                           stroke = 1))) +
-                       #facet_wrap(~pol, ncol=1, scales = "fixed", #strip.position = "bottom",
-                           #       labeller = as_labeller(c(co2 = "CO2", 
-                            #                               pm25 = "PM2.5",
-                             #                              voc = "TVOC",
-                              #                             temp = "Tempurature",
-                               #                            RH = "Relative Humidity"))) +
                        theme(
                          axis.text.x = element_text(family = "Bahnschrift", angle = 0, hjust = 0, size = 10, 
                                                     margin = margin(b = 1, unit = "mm")), 
@@ -263,7 +232,7 @@ function(input, output, session) {
       p8 <- layout(
         p8, 
         legend = list(title = "", font = list(family = "Bahnschrift", size = 12),
-                      itemwidth = 1),
+                      itemsizing='constant'),
         xaxis = list(showgrid = TRUE, minorgridwidth = 0.25, minorgridcolor = "#F0E7F1")
       ) %>%
         config(displayModeBar = "static", displaylogo = FALSE, 
@@ -302,10 +271,8 @@ function(input, output, session) {
     p <- ggplotly(height = 800,  
       ggplot() +
         geom_line(data = selected(), aes(x = how, y = co2, color = paste(site_id, id_room),
-                                         text2 = map(paste(
-                                           selected()$site_id, " ", selected()$room), HTML),
                                          text = map(paste(  
-                                           "<b> Site ID:", paste(selected()$site_id, selected()$id_room),"<br>", 
+                                           "<b> Site ID: </b>", paste(selected()$site_id, selected()$id_room),"<br>", 
                                            "<b>CO2 Concentration (ppm):</b>", round(selected()$co2, digits = 0),"<br>",
                                            "<b>Hour of Week:</b>", selected()$how,"<br>",
                                            "<b>Day of Week:</b>", selected()$day_of_week,"<br>",
@@ -313,17 +280,10 @@ function(input, output, session) {
                                            "<b>Room Type:</b>", selected()$room_type,"<br>",
                                            "<b>Season:</b>", selected()$season, "<br>",
                                            "<b>Datetime:</b>", selected()$date), HTML)), 
-                  xlim = t(), lwd = 0.25, show.legend = TRUE, legendgroup = "legend-text") + 
-        xlim(t()) +
+                  lwd = 0.25, show.legend = TRUE) + 
         scale_y_continuous(breaks = scales::pretty_breaks(n = 5)) +
-        scale_color_manual(guide = "legend", 
-                           labels = "text2",
+        scale_color_manual(guide = "legend",
                            values = colorsch2()) + 
-        guides(fill= guide_legend(
-          override.aes = list(
-            shape = NULL, 
-            size = 1, 
-            stroke = 1))) +
         facet_wrap(~.data[[var_uni()]], nrow = 4, scales = "free_y") +
         ylab("CO2 Concentration (ppm)\n") + xlab("\n Hour of Week (Sun through Sat)") +
         scale_x_continuous(limits = t(), breaks = seq(min(t()[1]), max(t()[2]), by = 24),
@@ -350,7 +310,7 @@ function(input, output, session) {
     p <- layout(
       p, 
       legend = list(title = "", font = list(family = "Bahnschrift", size = 12),
-                    itemwidth = 1),
+                    itemsizing='constant'),
       xaxis = list(showgrid = TRUE, minorgridwidth = 0.25, minorgridcolor = "#F0E7F1")
     ) %>%
       config(displayModeBar = "static", displaylogo = FALSE, 
@@ -386,28 +346,19 @@ function(input, output, session) {
     p2 <- ggplotly(height = 800,
       ggplot() +
         geom_line(data = selected(), aes(x = how, y = pm25, color = paste(site_id, id_room),
-                                         text2 = map(paste(
-                                           selected()$site_id, " ", selected()$room), HTML),
                                          text = map(paste(  
-                                           "<b> Site ID:", paste(selected()$site_id, selected()$id_room),"<br>", 
+                                           "<b> Site ID: </b>", paste(selected()$site_id, selected()$id_room),"<br>", 
                                            "<b>PM2.5 Concentration (μg/m3):</b>", round(selected()$pm25, digits = 0),"<br>",
                                            "<b>Hour of Week:</b>", selected()$how,"<br>",
                                            "<b>Day of Week:</b>", selected()$day_of_week,"<br>",
                                            "<b>Site Type:</b>", selected()$site_type,"<br>",
                                            "<b>Room Type:</b>", selected()$room_type,"<br>",
                                            "<b>Season:</b>", selected()$season, "<br>",
-                                           "<b>Datetime:</b>", selected()$date), HTML)), 
-                  xlim = t(), lwd = 0.25, show.legend = TRUE, legendgroup = "legend-text") + 
-        xlim(t()) +
+                                           "<b>Datetime:</b>", selected()$date), HTML)),
+                  lwd = 0.25, show.legend = TRUE) + 
         scale_y_continuous(breaks = scales::pretty_breaks(n = 5)) +
-        scale_color_manual(guide = "legend", 
-                           labels = "text2",
+        scale_color_manual(guide = "legend",
                            values = colorsch2()) + 
-        guides(fill= guide_legend(
-          override.aes = list(
-            shape = NULL, 
-            size = 1, 
-            stroke = 1))) +
         facet_wrap(~.data[[var_uni()]], nrow = 4, scales = "free_y") +
         ylab("PM2.5 Concentration (μg/m3)\n") + xlab("\n Hour of Week (Sun ~ Sat)") +
         scale_x_continuous(limits = t(), breaks = seq(min(t()[1]), max(t()[2]), by = 24),
@@ -434,7 +385,7 @@ function(input, output, session) {
     p2 <- layout(
       p2,
       legend = list(title = "", font = list(family = "Bahnschrift", size = 12),
-                    itemwidth = 1),
+                    itemsizing='constant'),
       xaxis = list(showgrid = TRUE, minorgridwidth = 0.25, minorgridcolor = "#F0E7F1")
     ) %>%
       config(displayModeBar = "static", displaylogo = FALSE, 
@@ -472,25 +423,18 @@ function(input, output, session) {
                                          text2 = map(paste(
                                            selected()$site_id, " ", selected()$room), HTML),
                                          text = map(paste(  
-                                           "<b> Site ID:", paste(selected()$site_id, selected()$id_room),"<br>", 
+                                           "<b> Site ID: </b>", paste(selected()$site_id, selected()$id_room),"<br>", 
                                            "<b>TVOC Concentration (ppb):</b>", round(selected()$voc, digits = 0),"<br>",
                                            "<b>Hour of Week:</b>", selected()$how,"<br>",
                                            "<b>Day of Week:</b>", selected()$day_of_week,"<br>",
                                            "<b>Site Type:</b>", selected()$site_type,"<br>",
                                            "<b>Room Type:</b>", selected()$room_type,"<br>",
                                            "<b>Season:</b>", selected()$season, "<br>",
-                                           "<b>Datetime:</b>", selected()$date), HTML)), 
-                  xlim = t(), lwd = 0.25, show.legend = TRUE, legendgroup = "legend-text") + 
-        xlim(t()) +
+                                           "<b>Datetime:</b>", selected()$date), HTML)),
+                  lwd = 0.25, show.legend = TRUE) +
         scale_y_continuous(breaks = scales::pretty_breaks(n = 5)) +
-        scale_color_manual(guide = "legend", 
-                           labels = "text2",
-                           values = colorsch2()) + 
-        guides(fill= guide_legend(
-          override.aes = list(
-            shape = NULL, 
-            size = 1, 
-            stroke = 1))) +
+        scale_color_manual(guide = "legend",
+                           values = colorsch2()) +
         facet_wrap(~.data[[var_uni()]], nrow = 4, scales = "free_y") +
         ylab("TVOC Concentration (ppb)\n") + xlab("\n Hour of Week (Sun ~ Sat)") +
         scale_x_continuous(limits = t(), breaks = seq(min(t()[1]), max(t()[2]), by = 24),
@@ -517,7 +461,7 @@ function(input, output, session) {
     p3 <- layout(
       p3,
       legend = list(title = "", font = list(family = "Bahnschrift", size = 12),
-                    itemwidth = 1),
+                    itemsizing='constant'),
       xaxis = list(showgrid = TRUE, minorgridwidth = 0.25, minorgridcolor = "#F0E7F1")
     ) %>%
       config(displayModeBar = "static", displaylogo = FALSE, 
@@ -551,10 +495,8 @@ function(input, output, session) {
     p4 <- ggplotly(height = 800, 
       ggplot() +
         geom_line(data = selected(), aes(x = how, y = temp, color = paste(site_id, id_room),
-                                         text2 = map(paste(
-                                           selected()$site_id, " ", selected()$room), HTML),
                                          text = map(paste(  
-                                           "<b> Site ID:", paste(selected()$site_id, selected()$id_room),"<br>", 
+                                           "<b> Site ID: </b>", paste(selected()$site_id, selected()$id_room),"<br>", 
                                            "<b>Temperature (°C):</b>", round(selected()$temp, digits = 0),"<br>",
                                            "<b>Hour of Week:</b>", selected()$how,"<br>",
                                            "<b>Day of Week:</b>", selected()$day_of_week,"<br>",
@@ -562,17 +504,10 @@ function(input, output, session) {
                                            "<b>Room Type:</b>", selected()$room_type,"<br>",
                                            "<b>Season:</b>", selected()$season, "<br>",
                                            "<b>Datetime:</b>", selected()$date), HTML)), 
-                  xlim = t(), lwd = 0.25, show.legend = TRUE, legendgroup = "legend-text") + 
-        xlim(t()) +
+                  lwd = 0.25, show.legend = TRUE) +
         scale_y_continuous(breaks = scales::pretty_breaks(n = 5)) +
-        scale_color_manual(guide = "legend", 
-                           labels = "text2",
+        scale_color_manual(guide = "legend",
                            values = colorsch2()) + 
-        guides(fill= guide_legend(
-          override.aes = list(
-            shape = NULL, 
-            size = 1, 
-            stroke = 1))) +
         facet_wrap(~.data[[var_uni()]], nrow = 4, scales = "free_y") +
         ylab("Temperature (°C)\n") + xlab("\n Hour of Week (Sun ~ Sat)") +
         scale_x_continuous(limits = t(), breaks = seq(min(t()[1]), max(t()[2]), by = 24),
@@ -599,7 +534,7 @@ function(input, output, session) {
     p4 <- layout(
       p4,
       legend = list(title = "", font = list(family = "Bahnschrift", size = 12),
-                    itemwidth = 1),
+                    itemsizing='constant'),
       xaxis = list(showgrid = TRUE, minorgridwidth = 0.25, minorgridcolor = "#F0E7F1")
     ) %>%
       config(displayModeBar = "static", displaylogo = FALSE, 
@@ -635,10 +570,8 @@ function(input, output, session) {
     p5 <- ggplotly(height = 800, 
       ggplot() +
         geom_line(data = selected(), aes(x = how, y = RH, color = paste(site_id, id_room),
-                                         text2 = map(paste(
-                                           selected()$site_id, " ", selected()$room), HTML),
                                          text = map(paste(  
-                                           "<b> Site ID:", paste(selected()$site_id, selected()$id_room),"<br>", 
+                                           "<b> Site ID: </b>", paste(selected()$site_id, selected()$id_room),"<br>", 
                                            "<b>Relative Humidity (%):</b>", round(selected()$RH, digits = 0),"<br>",
                                            "<b>Hour of Week:</b>", selected()$how,"<br>",
                                            "<b>Day of Week:</b>", selected()$day_of_week,"<br>",
@@ -646,17 +579,10 @@ function(input, output, session) {
                                            "<b>Room Type:</b>", selected()$room_type,"<br>",
                                            "<b>Season:</b>", selected()$season, "<br>",
                                            "<b>Datetime:</b>", selected()$date), HTML)), 
-                  xlim = t(), lwd = 0.25, show.legend = TRUE, legendgroup = "legend-text") + 
-        xlim(t()) +
+                  lwd = 0.25, show.legend = TRUE) +
         scale_y_continuous(breaks = scales::pretty_breaks(n = 5)) +
-        scale_color_manual(guide = "legend", 
-                           labels = "text2",
+        scale_color_manual(guide = "legend",
                            values = colorsch2()) + 
-        guides(fill= guide_legend(
-          override.aes = list(
-            shape = NULL, 
-            size = 1, 
-            stroke = 1))) +
         facet_wrap(~.data[[var_uni()]], nrow = 4, scales = "free_y") +
         ylab("Relative Humidity (%)\n\n") + xlab("\n Hour of Week (Sun ~ Sat)") +
         scale_x_continuous(limits = t(), breaks = seq(min(t()[1]), max(t()[2]), by = 24),
@@ -684,7 +610,7 @@ function(input, output, session) {
     p5 <- layout(
       p5,
       legend = list(title = "", font = list(family = "Bahnschrift", size = 12),
-                    itemwidth = 1),
+                    itemsizing='constant'),
       xaxis = list(showgrid = TRUE, minorgridwidth = 0.25, minorgridcolor = "#F0E7F1")
     ) %>%
       config(displayModeBar = "static", displaylogo = FALSE, 
@@ -693,8 +619,6 @@ function(input, output, session) {
                                            "zoomIn2d", "zoomOut2d", "toggleSpikelines")
       ) %>%
       event_register('plotly_legendclick')
-    
-    
     w$hide()
     p5
     })
@@ -1152,5 +1076,4 @@ function(input, output, session) {
       })
     }
   })
-  
 }
