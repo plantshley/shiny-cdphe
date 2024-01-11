@@ -1,0 +1,12 @@
+name: CDPHE_app_v1
+title: CDPHE_app_v1
+username: plantshley
+account: plantshley
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 10901900
+bundleId: 8135085
+url: https://plantshley.shinyapps.io/CDPHE_app_v1/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE
