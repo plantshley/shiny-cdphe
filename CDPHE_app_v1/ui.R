@@ -1,10 +1,10 @@
-source(paste0(rstudioapi::getActiveProject(),"/CDPHE_app_v1/ui/app_funs.R"))
+source("ui/app_funs.R")
 
 ### UI Start ###
 
 fluidPage(
   
-  includeCSS(paste0(getActiveProject(), "/CDPHE_app_v1/www/css_cdphe.css")),
+  includeCSS("www/css_cdphe.css"),
 
   waiter::useWaiter(), 
   shinyjs::useShinyjs(),
@@ -30,10 +30,10 @@ fluidPage(
             
     tabsetPanel(id = "tabs", selected = "home_tab",
                 
-      source(paste0(getActiveProject(), "/CDPHE_app_v1/ui/tab_home.R"))$value,
-      source(paste0(getActiveProject(), "/CDPHE_app_v1/ui/tab_univ.R"))$value,
-      source(paste0(getActiveProject(), "/CDPHE_app_v1/ui/tab_mv.R"))$value,
-      source(paste0(getActiveProject(), "/CDPHE_app_v1/ui/tab_gloss.R"))$value
+      source("ui/tab_home.R")$value,
+      source("ui/tab_univ.R")$value,
+      source("ui/tab_mv.R")$value,
+      source("ui/tab_gloss.R")$value
       )
     )
   )

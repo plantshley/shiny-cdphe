@@ -1,4 +1,4 @@
-source(paste0(rstudioapi::getActiveProject(),"/CDPHE_app_v1/ui/app_funs.R"))
+source("ui/app_funs.R")
 source("ui.R")
 
 function(input, output, session) {
@@ -50,7 +50,8 @@ function(input, output, session) {
 # CDF PLOT
     if (mv_pt() == "cfd") {
       validate(
-        need(selected_mv()$val, "Sorry, there is no data available for your selection. (Or it could be there is a lot of data and I need more time to load...)"
+        need(selected_mv()$val, "Sorry, there is no data available for your selection. (Or it could be there is a lot of data and I need more time to load...)
+             If the waiter is stuck spinning, you may need to refresh the page."
         ))
     p6 <- ggplotly(height = 900, 
                   ggplot(data = selected_mv(), aes(x = val, y = ecdf, color = paste(site_id, id_room),
@@ -89,10 +90,10 @@ function(input, output, session) {
                       plot.margin = margin(t = 0, r = 0, b = 0, l = 0, unit = "pt"),
                       panel.background = element_rect(fill = "white", color = '#F0E7F1', linewidth =1.5),
                       panel.grid = element_blank(),
-                      panel.grid.major.y = element_line(color = "#F0E7F1", size = 0.25),
-                      panel.grid.minor.y = element_line(color = "#F0E7F1", size = 0.25),
-                      panel.grid.major.x = element_line(color = "#F0E7F1", size = 0.25),
-                      panel.grid.minor.x = element_line(color = "#F0E7F1", size = 0.25)),
+                      panel.grid.major.y = element_line(color = "#F0E7F1", linewidth = 0.25),
+                      panel.grid.minor.y = element_line(color = "#F0E7F1", linewidth = 0.25),
+                      panel.grid.major.x = element_line(color = "#F0E7F1", linewidth = 0.25),
+                      panel.grid.minor.x = element_line(color = "#F0E7F1", linewidth = 0.25)),
                   tooltip = "text"
                   )
     p6 <- layout(
@@ -113,7 +114,8 @@ function(input, output, session) {
 # NORMALIZED PLOT    
     } else if (mv_pt() == "norm") {
       validate(
-        need(selected_mv()$val, "Sorry, there is no data available for your selection. (Or there is a lot of data and I need more time to load...)"
+        need(selected_mv()$val, "Sorry, there is no data available for your selection. (Or there is a lot of data and I need more time to load...) 
+             If the waiter is stuck spinning, you may need to refresh the page."
         ))
       
     p7 <- ggplotly(height = 800, 
@@ -129,7 +131,7 @@ function(input, output, session) {
                                                       "<b>Season:</b>", selected_mv()$season, "<br>",
                                                       "<b>Datetime:</b>", selected_mv()$date), HTML)), 
                                lwd = 0.2) +
-                     scale_x_continuous(breaks = seq(0, max(selected_mv()$how), by = 24)) +
+                     scale_x_continuous(breaks = seq(0, max(selected_mv()$how, na.rm = T), by = 24)) + 
                      scale_y_continuous(breaks = scales::pretty_breaks(n = 10), limits = c(0,1)) +
                      ylab(" ") + 
                      labs(x = "\nHour (0 = 12am the first Sunday of collected data)\n") +
@@ -155,10 +157,10 @@ function(input, output, session) {
                        plot.margin = margin(t = 0, r = 0, b = 0, l = 0, unit = "pt"),
                        panel.background = element_rect(fill = "white", color = '#F0E7F1', linewidth =1.5),
                        panel.grid = element_blank(),
-                       panel.grid.major.y = element_line(color = "#F0E7F1", size = 0.25),
-                       panel.grid.minor.y = element_line(color = "#F0E7F1", size = 0.25),
-                       panel.grid.major.x = element_line(color = "#F0E7F1", size = 0.25),
-                       panel.grid.minor.x = element_line(color = "#F0E7F1", size = 0.25)),
+                       panel.grid.major.y = element_line(color = "#F0E7F1", linewidth = 0.25),
+                       panel.grid.minor.y = element_line(color = "#F0E7F1", linewidth = 0.25),
+                       panel.grid.major.x = element_line(color = "#F0E7F1", linewidth = 0.25),
+                       panel.grid.minor.x = element_line(color = "#F0E7F1", linewidth = 0.25)),
                    tooltip = "text"
     )
     p7 <- layout(
@@ -181,8 +183,9 @@ function(input, output, session) {
 # SCATTER PLOT
     } else if (mv_pt() == "scat") {
       validate(
-        need(length(mv_pol()) == 2, "Please refresh the page and ensure you have TWO indicators selected for the Scatter Plot."), 
-        need(nrow(selected_mv()) != 0, "Sorry, there is no data available for your selection. (Or there is a lot of data and I need more time to load...)"
+        need(length(mv_pol()) == 2, "ERROR (womp womp). Please refresh the page and ensure you have TWO indicators selected for the Scatter Plot."), 
+        need(nrow(selected_mv()) != 0, "Sorry, there is no data available for your selection. (Or there is a lot of data and I need more time to load...) 
+             If the waiter is stuck spinning, you may need to refresh the page."
         ))
       
       p8 <- ggplotly(height = 600,
@@ -223,10 +226,10 @@ function(input, output, session) {
                          plot.margin = margin(t = 0, r = 0, b = 0, l = 0, unit = "pt"),
                          panel.background = element_rect(fill = "white", color = '#F0E7F1', linewidth =1.5),
                          panel.grid = element_blank(),
-                         panel.grid.major.y = element_line(color = "#F0E7F1", size = 0.25),
-                         panel.grid.minor.y = element_line(color = "#F0E7F1", size = 0.25),
-                         panel.grid.major.x = element_line(color = "#F0E7F1", size = 0.25),
-                         panel.grid.minor.x = element_line(color = "#F0E7F1", size = 0.25)),
+                         panel.grid.major.y = element_line(color = "#F0E7F1", linewidth = 0.25),
+                         panel.grid.minor.y = element_line(color = "#F0E7F1", linewidth = 0.25),
+                         panel.grid.major.x = element_line(color = "#F0E7F1", linewidth = 0.25),
+                         panel.grid.minor.x = element_line(color = "#F0E7F1", linewidth = 0.25)),
                      tooltip = "text"
       )
       p8 <- layout(
@@ -266,7 +269,8 @@ function(input, output, session) {
     output$plot <- renderPlotly({ res = 96
     req(input$go, input$co2)
     validate(
-      need(length(selected()$co2) != 0, "Sorry, there is no data available for your selection. (Or there is a lot of data and I need more time to load...)"
+      need(length(selected()$co2) != 0, "Sorry, there is no data available for your selection. (Or there is a lot of data and I need more time to load...) 
+           If the waiter is stuck spinning, you may need to refresh the page."
       ))
     p <- ggplotly(height = 800,  
       ggplot() +
@@ -301,10 +305,10 @@ function(input, output, session) {
           plot.margin = margin(t = 10, r = 10, b = 10, l = 10, unit = "pt"),
           panel.background = element_rect(fill = "white", color = '#F0E7F1', linewidth =1.5),
           panel.grid = element_blank(),
-          panel.grid.major.y = element_line(color = "#F0E7F1", size = 0.25),
-          panel.grid.minor.y = element_line(color = "#F0E7F1", size = 0.25),
-          panel.grid.major.x = element_line(color = "#F0E7F1", size = 0.25),
-          panel.grid.minor.x = element_line(color = "#F0E7F1", size = 0.25)),
+          panel.grid.major.y = element_line(color = "#F0E7F1", linewidth = 0.25),
+          panel.grid.minor.y = element_line(color = "#F0E7F1", linewidth = 0.25),
+          panel.grid.major.x = element_line(color = "#F0E7F1", linewidth = 0.25),
+          panel.grid.minor.x = element_line(color = "#F0E7F1", linewidth = 0.25)),
       tooltip = "text"
     )
     p <- layout(
@@ -341,7 +345,8 @@ function(input, output, session) {
     
     req(input$go, input$pm25)
     validate(
-      need(length(selected()$pm25) != 0, "Sorry, there is no data available for your selection. (Or there is a lot of data and I need more time to load...)"
+      need(length(selected()$pm25) != 0, "Sorry, there is no data available for your selection. (Or there is a lot of data and I need more time to load...) 
+           If the waiter is stuck spinning, you may need to refresh the page."
       ))
     p2 <- ggplotly(height = 800,
       ggplot() +
@@ -376,10 +381,10 @@ function(input, output, session) {
           plot.margin = margin(t = 10, r = 10, b = 10, l = 10, unit = "pt"),
           panel.background = element_rect(fill = "white", color = '#F0E7F1', linewidth =1.5),
           panel.grid = element_blank(),
-          panel.grid.major.y = element_line(color = "#F0E7F1", size = 0.25),
-          panel.grid.minor.y = element_line(color = "#F0E7F1", size = 0.25),
-          panel.grid.major.x = element_line(color = "#F0E7F1", size = 0.25),
-          panel.grid.minor.x = element_line(color = "#F0E7F1", size = 0.25)),
+          panel.grid.major.y = element_line(color = "#F0E7F1", linewidth = 0.25),
+          panel.grid.minor.y = element_line(color = "#F0E7F1", linewidth = 0.25),
+          panel.grid.major.x = element_line(color = "#F0E7F1", linewidth = 0.25),
+          panel.grid.minor.x = element_line(color = "#F0E7F1", linewidth = 0.25)),
       tooltip = "text"
     )
     p2 <- layout(
@@ -415,13 +420,12 @@ function(input, output, session) {
     
     req(input$go, input$voc)
     validate(
-      need(length(selected()$voc) != 0, "Sorry, there is no data available for your selection. (Or there is a lot of data and I need more time to load...)"
+      need(length(selected()$voc) != 0, "Sorry, there is no data available for your selection. (Or there is a lot of data and I need more time to load...)
+           If the waiter is stuck spinning, you may need to refresh the page."
       ))
     p3 <- ggplotly(height = 800,
       ggplot() +
         geom_line(data = selected(), aes(x = how, y = voc, color = paste(site_id, id_room),
-                                         text2 = map(paste(
-                                           selected()$site_id, " ", selected()$room), HTML),
                                          text = map(paste(  
                                            "<b> Site ID: </b>", paste(selected()$site_id, selected()$id_room),"<br>", 
                                            "<b>TVOC Concentration (ppb):</b>", round(selected()$voc, digits = 0),"<br>",
@@ -452,10 +456,10 @@ function(input, output, session) {
           plot.margin = margin(t = 10, r = 10, b = 10, l = 10, unit = "pt"),
           panel.background = element_rect(fill = "white", color = '#F0E7F1', linewidth =1.5),
           panel.grid = element_blank(),
-          panel.grid.major.y = element_line(color = "#F0E7F1", size = 0.25),
-          panel.grid.minor.y = element_line(color = "#F0E7F1", size = 0.25),
-          panel.grid.major.x = element_line(color = "#F0E7F1", size = 0.25),
-          panel.grid.minor.x = element_line(color = "#F0E7F1", size = 0.25)),
+          panel.grid.major.y = element_line(color = "#F0E7F1", linewidth = 0.25),
+          panel.grid.minor.y = element_line(color = "#F0E7F1", linewidth = 0.25),
+          panel.grid.major.x = element_line(color = "#F0E7F1", linewidth = 0.25),
+          panel.grid.minor.x = element_line(color = "#F0E7F1", linewidth = 0.25)),
       tooltip = "text"
     )
     p3 <- layout(
@@ -490,7 +494,8 @@ function(input, output, session) {
     
     req(input$go, input$temp)
     validate(
-      need(length(selected()$temp) != 0, "Sorry, there is no data available for your selection. (Or there is a lot of data and I need more time to load...)"
+      need(length(selected()$temp) != 0, "Sorry, there is no data available for your selection. (Or there is a lot of data and I need more time to load...)
+           If the waiter is stuck spinning, you may need to refresh the page."
       ))
     p4 <- ggplotly(height = 800, 
       ggplot() +
@@ -525,10 +530,10 @@ function(input, output, session) {
           plot.margin = margin(t = 10, r = 10, b = 10, l = 10, unit = "pt"),
           panel.background = element_rect(fill = "white", color = '#F0E7F1', linewidth =1.5),
           panel.grid = element_blank(),
-          panel.grid.major.y = element_line(color = "#F0E7F1", size = 0.25),
-          panel.grid.minor.y = element_line(color = "#F0E7F1", size = 0.25),
-          panel.grid.major.x = element_line(color = "#F0E7F1", size = 0.25),
-          panel.grid.minor.x = element_line(color = "#F0E7F1", size = 0.25)),
+          panel.grid.major.y = element_line(color = "#F0E7F1", linewidth = 0.25),
+          panel.grid.minor.y = element_line(color = "#F0E7F1", linewidth = 0.25),
+          panel.grid.major.x = element_line(color = "#F0E7F1", linewidth = 0.25),
+          panel.grid.minor.x = element_line(color = "#F0E7F1", linewidth = 0.25)),
       tooltip = "text"
     )
     p4 <- layout(
@@ -565,7 +570,8 @@ function(input, output, session) {
     
     req(input$go, input$rh)
     validate(
-      need(length(selected()$RH) != 0, "Sorry, there is no data available for your selection. (Or there is a lot of data and I need more time to load...)"
+      need(length(selected()$RH) != 0, "Sorry, there is no data available for your selection. (Or there is a lot of data and I need more time to load...)
+           If the waiter is stuck spinning, you may need to refresh the page."
       ))
     p5 <- ggplotly(height = 800, 
       ggplot() +
@@ -601,10 +607,10 @@ function(input, output, session) {
           plot.margin = margin(t = 10, r = 10, b = 10, l = 10, unit = "pt"),
           panel.background = element_rect(fill = "white", color = '#F0E7F1', linewidth =1.5),
           panel.grid = element_blank(),
-          panel.grid.major.y = element_line(color = "#F0E7F1", size = 0.25),
-          panel.grid.minor.y = element_line(color = "#F0E7F1", size = 0.25),
-          panel.grid.major.x = element_line(color = "#F0E7F1", size = 0.25),
-          panel.grid.minor.x = element_line(color = "#F0E7F1", size = 0.25)),
+          panel.grid.major.y = element_line(color = "#F0E7F1", linewidth = 0.25),
+          panel.grid.minor.y = element_line(color = "#F0E7F1", linewidth = 0.25),
+          panel.grid.major.x = element_line(color = "#F0E7F1", linewidth = 0.25),
+          panel.grid.minor.x = element_line(color = "#F0E7F1", linewidth = 0.25)),
       tooltip = "text"
     )
     p5 <- layout(
@@ -906,31 +912,35 @@ function(input, output, session) {
     
     mv1 <- 
     if (mv_pt() == "cfd") {
+      dataset2 <- readRDS("data/cdphe_CFD_mega4.rds")
       
       if (input$var_mv %in% c("day_of_week", "tod", "hod")) {
-       dataset3 %>%
+       dataset2 %>%
           filter(pol %in% mv_pol()) %>%
           filter(.data[[input$var_mv]] %in% input$second_in_mv) %>%
           group_by(site_id, id_room, pol) %>%
           mutate(ecdf = ecdf(val)(val))
         
       } else
-       dataset3 %>%
+       dataset2 %>%
           filter(pol %in% mv_pol()) %>%
           filter(.data[[input$var_mv]] %in% input$second_in_mv)
       
     } else if (mv_pt() == "norm") {
-      "%ni%" <- Negate("%in%")
-        dataset4 %>%
+      dataset2 <- readRDS("data/cdphe_Mega_hr_scaled_full_melt2.rds") #norm
+      #"%ni%" <- Negate("%in%")
+        dataset2 %>%
         filter(pol %in% mv_pol()) %>%
         filter(.data[[input$var_mv]] %in% input$second_in_mv)
       
     } else if (mv_pt() == "scat") {
-      dataset5 %>%
+      dataset2 <- readRDS("data/cdphe_Mega_hr_scaled_full2.rds") #scatter
+      dataset2 %>%
         filter(.data[[input$var_mv]] %in% input$second_in_mv)
       
     } else {
-      dataset3 %>%
+      dataset2 <- readRDS("data/cdphe_CFD_mega4.rds")
+      dataset2 %>%
         filter(.data[[input$var_mv]] %in% input$second_in_mv)
     }
     origen(mv1)
@@ -956,21 +966,22 @@ function(input, output, session) {
     w$show()
     uni1 <- 
     if (input$plot_type == "1hr") {
-      dataset2 %>%
+      dataset2 <- readRDS("data/cdphe_Mega_hr_fullweek25.rds") %>%
         filter(.data[[input$var]] %in% input$second_in)
       
     } else if (input$plot_type == "24hr") {
-      dataset2 %>% d_avg() %>% 
+      dataset2 <-
+        readRDS("data/cdphe_Mega_day_fullweek25.rds") %>% 
         filter(.data[[input$var]] %in% input$second_in)
       
     } else if (input$plot_type == "trend") {
       dataset2 <-
-        readRDS(paste0(rstudioapi::getActiveProject(),"/CDPHE_app_v1/data/cdphe_ssa_trend2.rds")) %>%
+        readRDS("data/cdphe_ssa_trend2.rds") %>%
         filter(.data[[input$var]] %in% input$second_in)
       
     } else if (input$plot_type == "pattern") {
       dataset2 <-
-        readRDS(paste0(rstudioapi::getActiveProject(),"/CDPHE_app_v1/data/cdphe_ssa_pattern2.rds")) %>%
+        readRDS("data/cdphe_ssa_pattern2.rds") %>%
         filter(.data[[input$var]] %in% input$second_in)
       
     } else {

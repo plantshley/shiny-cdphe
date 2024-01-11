@@ -1,38 +1,26 @@
 #libraries
 library(shiny)
+library(purrr)
 library(ggplot2)
+library(dplyr)
 library(plotly)
 library(shinyWidgets)
 library(fontawesome)
 library(shinyjs)
 library(bslib)
-library(waiter)
+library(waiter) 
 library(htmltools)
 library(shinydashboard)
 library(shinydashboardPlus)
-library(tidyverse)
-library(lubridate)
-library(knitr)
-library(grid)
-library(rstudioapi)
-library(datawizard)
-library(reshape2)
+#library(tidyverse)
+#library(lubridate)
+#library(knitr)
+#library(grid)
+#library(datawizard)
+#library(reshape2)
 library(scrollrevealR)
-library(fresh)
-library(DT)
+#library(fresh)
 library(shinyBS)
-
-
-#data
-dataset2 <- readRDS(paste0(rstudioapi::getActiveProject(),"/CDPHE_app_v1/data/cdphe_Mega_hr_fullweek25.rds"))
-dataset3 <- readRDS(paste0(rstudioapi::getActiveProject(),"/CDPHE_app_v1/data/cdphe_CFD_mega4.rds"))
-dataset4 <- readRDS(paste0(rstudioapi::getActiveProject(),"/CDPHE_app_v1/data/cdphe_Mega_hr_scaled_full_melt2.rds")) #norm
-dataset5 <- readRDS(paste0(rstudioapi::getActiveProject(),"/CDPHE_app_v1/data/cdphe_Mega_hr_scaled_full2.rds")) #scatter
-
-#fivemin_1 <- readRDS(paste0(rstudioapi::getActiveProject(),"/data/5-min data/cdphe_MONGO_5min_scaled.rds"))
-#fivemin_2 <- readRDS(paste0(rstudioapi::getActiveProject(),"/data/5-min data/cdphe_MONGO_5min_scaled_melt.rds"))
-#fivemin_3 <- readRDS(paste0(rstudioapi::getActiveProject(),"/data/5-min data/cdphe_MONGO_5min.rds"))
-#fivemin_4 <- readRDS(paste0(rstudioapi::getActiveProject(),"/data/5-min data/cdphe_MONGO_5min_melt.rds"))
 
 #lists
 vars <- c("Site Type" = "site_type", "Room Type" = "room_type", 
@@ -85,81 +73,3 @@ pickerFormat01 <- function(hex, icon, label) {
    </div>", hex, icon, label)
   )
 }
-
-#univariable tab fxn 
-univ_tab <- function(tab_id) {
-  
-  tabPanel(value = tab_id, id = tab_id, 
-           wellPanel(id = "top-well", 
-                     
-                     fluidRow(
-                       column(
-                         prettyRadioButtons(
-                           inputId = "plot_type",
-                           label = "Choose plot type:", 
-                           choices = plot_types,
-                           selected = "1hr", 
-                           icon = icon("meteor","fa-xl", lib = "font-awesome"), 
-                           bigger = TRUE,
-                           status = "info",
-                           animation = "jelly", 
-                           inline = TRUE), 
-                         width = 5), 
-                       
-                       column(
-                         pickerInput("var", label = "Choose variable:", 
-                                     choices = vars, selected = "site_type",
-                                     choicesOpt = list(
-                                       content = c(
-                                         pickerFormat01("#E7BEF9", "fa fa-star fa-sm", "Site Type"),
-                                         pickerFormat01("#F2BEF2", "fa fa-heart fa-sm", "Room Type"),
-                                         pickerFormat01("#FFC9EF", "fa fa-cloud fa-xs", "Season"),
-                                         pickerFormat01("#FFCEDA", "fa-solid fa-diamond fa-sm", "Leakiness"),
-                                         pickerFormat01("#FFCFC5", "fa fa-clover", "Air Handlers"))),
-                                     options = pickerOptions(container = "body", width = "fit", iconBase = "fas")),
-                         width = 4, offset = 0)),
-                     
-                     fluidRow(
-                       
-                       column(  
-                         prettyRadioButtons(
-                           "colors", "Choose color scheme:", inline = TRUE,
-                           choices = c("Default", "Rainbow", "Colorblind-Friendly"),
-                           icon = icon("droplet", "fa-2xs", lib = "font-awesome"), 
-                           bigger = FALSE,
-                           status = "info",
-                           animation = "jelly"
-                         ), width = 5),
-                       
-                       column(
-                         pickerInput("second_in", label = "Sub-variables", choices = NULL, 
-                                     multiple =TRUE, options = pickerOptions(container = "body", iconBase = "fas",
-                                                                             selectedTextFormat = "count >1",
-                                                                             tickIcon = FALSE, width = "fit", inline = TRUE)), width = 4, offset = 0)),
-                     
-                     fluidRow( align = "center",
-                               
-                               actionBttn("go", "Generate Plots", style = "pill", icon("rocket","fa-lg", lib = "font-awesome")))
-           ),
-           
-           plotlyOutput("plot"),
-           
-           wellPanel(id = "bottom-well", 
-                     sliderInput("hour", "Choose hour range within the week:", min = 0, 
-                                 max = 167, 
-                                 animate = F, 
-                                 value = c(0,167), step = 8, width = "100%"))
-  )
-}
-
-#1-day average fxn
-d_avg <- function(data){
-  data %>%
-    group_by(site_id, dow, id_room, day_of_week) %>%
-    mutate(across(c(co2, pm25, voc, temp, RH), ~ mean(.x, na.rm = TRUE)))%>%
-    slice(1)
-  
-}
-  
-
-
