@@ -912,7 +912,7 @@ function(input, output, session) {
     
     mv1 <- 
     if (mv_pt() == "cfd") {
-      dataset2 <- readRDS("data/cdphe_CFD_mega4.rds")
+      dataset2 <- readRDS("data/cdphe_CFD_mega5.rds")
       
       if (input$var_mv %in% c("day_of_week", "tod", "hod")) {
        dataset2 %>%
@@ -927,19 +927,19 @@ function(input, output, session) {
           filter(.data[[input$var_mv]] %in% input$second_in_mv)
       
     } else if (mv_pt() == "norm") {
-      dataset2 <- readRDS("data/cdphe_Mega_hr_scaled_full_melt2.rds") #norm
+      dataset2 <- readRDS("data/cdphe_Mega_hr_scaled_full_melt3.rds") #norm
       #"%ni%" <- Negate("%in%")
         dataset2 %>%
         filter(pol %in% mv_pol()) %>%
         filter(.data[[input$var_mv]] %in% input$second_in_mv)
       
     } else if (mv_pt() == "scat") {
-      dataset2 <- readRDS("data/cdphe_Mega_hr_scaled_full2.rds") #scatter
+      dataset2 <- readRDS("data/cdphe_Mega_hr_scaled_full3.rds") #scatter
       dataset2 %>%
         filter(.data[[input$var_mv]] %in% input$second_in_mv)
       
     } else {
-      dataset2 <- readRDS("data/cdphe_CFD_mega4.rds")
+      dataset2 <- readRDS("data/cdphe_CFD_mega5.rds")
       dataset2 %>%
         filter(.data[[input$var_mv]] %in% input$second_in_mv)
     }
@@ -966,22 +966,22 @@ function(input, output, session) {
     w$show()
     uni1 <- 
     if (input$plot_type == "1hr") {
-      dataset2 <- readRDS("data/cdphe_Mega_hr_fullweek25.rds") %>%
+      dataset2 <- readRDS("data/cdphe_Mega_hr_fullweek26.rds") %>%
         filter(.data[[input$var]] %in% input$second_in)
       
     } else if (input$plot_type == "24hr") {
       dataset2 <-
-        readRDS("data/cdphe_Mega_day_fullweek25.rds") %>% 
+        readRDS("data/cdphe_Mega_day_fullweek26.rds") %>% 
         filter(.data[[input$var]] %in% input$second_in)
       
     } else if (input$plot_type == "trend") {
       dataset2 <-
-        readRDS("data/cdphe_ssa_trend2.rds") %>%
+        readRDS("data/cdphe_ssa_trend3.rds") %>%
         filter(.data[[input$var]] %in% input$second_in)
       
     } else if (input$plot_type == "pattern") {
       dataset2 <-
-        readRDS("data/cdphe_ssa_pattern2.rds") %>%
+        readRDS("data/cdphe_ssa_pattern3.rds") %>%
         filter(.data[[input$var]] %in% input$second_in)
       
     } else {
